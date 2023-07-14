@@ -11,8 +11,6 @@ namespace User_Contact_Management_System.Data
         {
             _connectionString = configuration.GetConnectionString("SqlConnection");
         }
-        public DbSet<Address> Addresses { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString);
