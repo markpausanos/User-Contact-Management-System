@@ -1,8 +1,15 @@
-﻿namespace User_Contact_Management_System.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace User_Contact_Management_System.Models
 {
     public class Contact
     {
-        public Guid Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Required]
         public User? User { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
