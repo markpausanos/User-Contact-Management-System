@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using User_Contact_Management_System.Data;
+using User_Contact_Management_System.Repositories.Users;
+using User_Contact_Management_System.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,4 +34,8 @@ app.Run();
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
     services.AddTransient<APIDbContext>();
+
+    services.AddScoped<IUserService, UserService>();
+
+    services.AddScoped<IUserRepository, UserRepository>();
 }

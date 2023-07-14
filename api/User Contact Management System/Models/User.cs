@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace User_Contact_Management_System.Models
 {
+    [Index(nameof(Username), nameof(Email), IsUnique = true)]
     public class User
     {
         [Key]
