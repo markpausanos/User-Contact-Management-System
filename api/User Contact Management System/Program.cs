@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using User_Contact_Management_System.Configurations;
 using User_Contact_Management_System.Data;
 using User_Contact_Management_System.Repositories.Users;
@@ -38,7 +41,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 {
     services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
     services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<JwtConfig>>().Value);
-    var jwtSettings = configuration.GetSection("JwtConfig").Get<JwtConfig>();
+    var jwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfig>();
     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -48,9 +51,9 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key!))
+                ValidIssuer = jwtConfig.Issuer,
+                ValidAudience = jwtConfig.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret!))
             };
         });
 
