@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using User_Contact_Management_System.Configurations;
 using User_Contact_Management_System.Data;
+using User_Contact_Management_System.Models;
 using User_Contact_Management_System.Repositories.Users;
 using User_Contact_Management_System.Services.Users;
 
@@ -31,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -51,11 +54,16 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
+                RequireExpirationTime = false,
                 ValidIssuer = jwtConfig.Issuer,
                 ValidAudience = jwtConfig.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret!))
             };
         });
+
+    services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddDefaultTokenProviders()
+        .AddEntityFrameworkStores<APIDbContext>();
 
     services.AddTransient<APIDbContext>();
 
