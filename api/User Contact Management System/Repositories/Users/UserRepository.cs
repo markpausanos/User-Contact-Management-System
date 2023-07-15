@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using User_Contact_Management_System.Data;
 using User_Contact_Management_System.Models;
 
@@ -7,51 +8,58 @@ namespace User_Contact_Management_System.Repositories.Users
     public class UserRepository : IUserRepository
     {
         private readonly APIDbContext _context;
-
-        public UserRepository(APIDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UserRepository(APIDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public async Task<int> CreateUser(User user)
+        public async Task<string?> CreateUser(ApplicationUser user, string password)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    await _context.Users.AddAsync(user);
-                    await _context.SaveChangesAsync();
+                    var isCreated = await _userManager.CreateAsync(user, password);
 
-                    transaction.Commit();
-                    return user.Id;
+                    if (isCreated.Succeeded)
+                    {
+                        return await _userManager.GetUserIdAsync(user);
+                    }
+
+                    return null;
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     throw new Exception(ex.Message);
                 }
             }
+
         }
-        public async Task<User?> GetUserByUsername(string username)
+        public async Task<ApplicationUser?> GetUserByUsername(string username)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            try
             {
-                try
+                if (username != null)
                 {
-                    return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);        
+                    return await _userManager.FindByNameAsync(username);
                 }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new Exception(ex.Message);
-                }
+  
+                return null;
             }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
         public Task<bool> DeleteUser(int id)
         {
             throw new NotImplementedException();
         }
-        public Task<bool> UpdateUser(User user)
+        public Task<bool> UpdateUser(IdentityUser user)
         {
             throw new NotImplementedException();
         }
