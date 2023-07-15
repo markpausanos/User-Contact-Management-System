@@ -25,14 +25,29 @@ namespace User_Contact_Management_System.Controllers
         {
             try
             {
-                var newUserToken = await _userService.CreateUser(user);
-
-                if (newUserToken == null)
+                if (ModelState.IsValid)
                 {
-                    return BadRequest("User cannot be created.");
-                }
+                    var authResult = await _userService.CreateUser(user);
 
-                return Ok(newUserToken);
+                    if (authResult == null)
+                    {
+                        return BadRequest(new AuthResult()
+                        {
+                            Result = false,
+                            Token = null,
+                            Error = "Username or Email already exists."
+                        });
+                    }
+
+                    return Ok(authResult);
+                }
+           
+                return BadRequest(new AuthResult()
+                {
+                    Result = false,
+                    Token = null,
+                    Error = "Invalid request."
+                });
             }
             catch (Exception e)
             {
