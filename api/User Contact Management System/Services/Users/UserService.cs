@@ -1,4 +1,10 @@
-﻿using User_Contact_Management_System.Dtos.Users;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using User_Contact_Management_System.Configurations;
+using User_Contact_Management_System.Dtos.Users;
 using User_Contact_Management_System.Models;
 using User_Contact_Management_System.Repositories.Users;
 
@@ -7,24 +13,41 @@ namespace User_Contact_Management_System.Services.Users
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly JwtConfig _jwtConfig;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, JwtConfig jwtConfig)
         {
             _userRepository = userRepository;
+            _jwtConfig = jwtConfig; 
         }
 
-        public async Task<User?> CreateUser(UserCreateDto user)
+        public async Task<AuthResult?> CreateUser(UserCreateDto user)
         {
-            var newuser = new User { 
-                FirstName = user.FirstName,
-                Email = user.Email, 
-                LastName = user.Email,  
-                Username = user.Username,
-            };
+            var userExists = await _userRepository.GetUserByUsername(user.Username!);
 
-            await _userRepository.CreateUser(newuser);
+            if (userExists == null)
+            {
+                var identityUser = new ApplicationUser
+                {
+                    UserName = user.Username,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                };
 
-            return newuser;
+                var createdUserId = await _userRepository.CreateUser(identityUser, user.Password!);
+                identityUser.Id = createdUserId;
+
+                var token = GenerateJwtToken(identityUser);
+
+                return new AuthResult()
+                {
+                    Result = true,
+                    Token = token,
+                };
+            }
+
+            return null;
         }
 
         public Task<bool> DeleteUser(string username)
@@ -32,12 +55,12 @@ namespace User_Contact_Management_System.Services.Users
             throw new NotImplementedException();
         }
 
-        public Task<User?> GetUserByEmail(string email)
+        public Task<ApplicationUser?> GetUserByEmail(string email)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User?> GetUserByUsername(string username)
+        public Task<ApplicationUser?> GetUserByUsername(string username)
         {
             throw new NotImplementedException();
         }
@@ -45,6 +68,30 @@ namespace User_Contact_Management_System.Services.Users
         public Task<bool> UpdateUserByUsername(string username)
         {
             throw new NotImplementedException();
+        }
+
+        // Utils
+        private string GenerateJwtToken(IdentityUser user)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret!);
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim("Id", user.Id),
+                    new Claim("Username", user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                }),
+
+                Expires = DateTime.Now.AddMinutes(10),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            };
+
+            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+            
+            return jwtTokenHandler.WriteToken(token);
         }
     }
 }
