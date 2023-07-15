@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Mapper\" />
   </ItemGroup>
 
 </Project>
