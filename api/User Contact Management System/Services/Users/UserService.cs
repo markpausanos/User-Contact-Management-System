@@ -21,13 +21,14 @@ namespace User_Contact_Management_System.Services.Users
             _jwtConfig = jwtConfig; 
         }
 
-        public async Task<AuthResult?> CreateUser(UserCreateDto user)
+        public async Task<AuthResult?> Register(UserCreateDto user)
         {
-            var userExists = await _userRepository.GetUserByUsername(user.Username!);
+            var usernameExists = await _userRepository.GetUserByUsername(user.Username!);
+            var emailExists = await _userRepository.GetUserByEmail(user.Email!);
 
-            if (userExists == null)
+            if (usernameExists == null && emailExists == null)
             {
-                var identityUser = new ApplicationUser
+                var applicationUser = new ApplicationUser
                 {
                     UserName = user.Username,
                     Email = user.Email,
@@ -35,10 +36,10 @@ namespace User_Contact_Management_System.Services.Users
                     LastName = user.LastName,
                 };
 
-                var createdUserId = await _userRepository.CreateUser(identityUser, user.Password!);
-                identityUser.Id = createdUserId;
+                var createdUserId = await _userRepository.CreateUser(applicationUser, user.Password!);
+                applicationUser.Id = createdUserId;
 
-                var token = GenerateJwtToken(identityUser);
+                var token = GenerateJwtToken(applicationUser);
 
                 return new AuthResult()
                 {
@@ -50,28 +51,57 @@ namespace User_Contact_Management_System.Services.Users
             return null;
         }
 
+        public async Task<AuthResult?> Login(UserLoginDto user)
+        {
+            var applicationUser = await _userRepository.GetUserByUsername(user.Username!);
+     
+            if (applicationUser != null)
+            {
+                var valid = await _userRepository.CheckPasswordIsValid(applicationUser, user.Password!);
+
+                if (valid)
+                {
+                    var token = GenerateJwtToken(applicationUser);
+
+                    return new AuthResult()
+                    {
+                        Result = true,
+                        Token = token,
+                    };
+                }
+            }
+
+            return null;
+        }
         public Task<bool> DeleteUser(string username)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ApplicationUser?> GetUserByEmail(string email)
+        public Task<bool> UpdateUserDetails(string id, UserUpdateDetailsDto user)
         {
-            throw new NotImplementedException();
+            var applicationUser = new ApplicationUser()
+            {
+                Id = id,
+                FirstName = user.FirstName,
+                LastName = user.FirstName,
+            };
+
+            return _userRepository.UpdateUserDetails(applicationUser);
         }
 
-        public Task<ApplicationUser?> GetUserByUsername(string username)
+        public Task<bool> UpdateUserPassword(string id, UserUpdatePasswordDto user)
         {
-            throw new NotImplementedException();
-        }
+            var applicationUser = new ApplicationUser()
+            {
+                Id = id,
+            };
 
-        public Task<bool> UpdateUserByUsername(string username)
-        {
-            throw new NotImplementedException();
+            return _userRepository.UpdateUserPassword(applicationUser, user.OldPassword!, user.NewPassword!);
         }
 
         // Utils
-        private string GenerateJwtToken(IdentityUser user)
+        private string GenerateJwtToken(ApplicationUser user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret!);
@@ -80,9 +110,10 @@ namespace User_Contact_Management_System.Services.Users
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("Id", user.Id),
-                    new Claim("Username", user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                    new Claim(JwtRegisteredClaimNames.NameId, user.Id),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Aud, "ucms-app"),
+                    new Claim(JwtRegisteredClaimNames.Iss, "ucms-api")
                 }),
 
                 Expires = DateTime.Now.AddMinutes(10),
