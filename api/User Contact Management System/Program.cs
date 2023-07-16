@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using User_Contact_Management_System.Configurations;
 using User_Contact_Management_System.Data;
@@ -42,32 +43,69 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
-    services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<JwtConfig>>().Value);
-    var jwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfig>();
-    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                RequireExpirationTime = false,
-                ValidIssuer = jwtConfig.Issuer,
-                ValidAudience = jwtConfig.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret!))
-            };
-        });
-
     services.AddIdentity<ApplicationUser, IdentityRole>()
-        .AddDefaultTokenProviders()
-        .AddEntityFrameworkStores<APIDbContext>();
+        .AddEntityFrameworkStores<APIDbContext>()
+        .AddDefaultTokenProviders();
+
+    services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement() 
+        {
+            {
+              new OpenApiSecurityScheme
+              {
+                Reference = new OpenApiReference
+                  {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                  },
+                  Scheme = "oauth2",
+                  Name = "Bearer",
+                  In = ParameterLocation.Header,
+
+                },
+                new List<string>()
+              }
+        });
+    });
+
+    services.Configure<JwtConfig>(configuration.GetSection("JwtConfig"));
+    var jwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfig>();
+    services.AddSingleton(jwtConfig);
+
+    services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            RequireExpirationTime = false,
+            ValidIssuer = jwtConfig.Issuer,
+            ValidAudience = jwtConfig.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret!))
+        };
+    });
+
 
     services.AddTransient<APIDbContext>();
-
     services.AddScoped<IUserService, UserService>();
-
     services.AddScoped<IUserRepository, UserRepository>();
 }

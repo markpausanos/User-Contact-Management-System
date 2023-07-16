@@ -85,6 +85,10 @@
     <Analyzer Include="..\User Contact Management System\packages\xunit.analyzers.1.2.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
     <Analyzer Include="..\User Contact Management System\packages\xunit.analyzers.1.2.0\analyzers\dotnet\cs\xunit.analyzers.fixes.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
