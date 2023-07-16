@@ -7,7 +7,7 @@ namespace User_Contact_Management_System.Dtos.Users
         [Required]
         [MinLength(4, ErrorMessage = "Invalid username")]
         [MaxLength(15, ErrorMessage = "Invalid username")]
-        public string? UserName { get; set; }
+        public string? Username { get; set; }
 
         [Required]
         [MinLength(6, ErrorMessage = "Invalid password")]

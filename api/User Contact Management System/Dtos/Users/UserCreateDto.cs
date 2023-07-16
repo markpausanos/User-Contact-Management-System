@@ -5,12 +5,10 @@ namespace User_Contact_Management_System.Dtos.Users
     public class UserCreateDto
     {
         [Required]
-        [MinLength(4, ErrorMessage = "First name too short")]
         [MaxLength(50, ErrorMessage = "First name can have at most 50 characters")]
         public string? FirstName { get; set; }
 
         [Required]
-        [MinLength(2, ErrorMessage = "Last name too short")]
         [MaxLength(50, ErrorMessage = "Last name can have at most 50 characters")]
         public string? LastName { get; set; }
 
@@ -27,5 +25,9 @@ namespace User_Contact_Management_System.Dtos.Users
         [MinLength(6, ErrorMessage = "Password too short")]
         [MaxLength(50, ErrorMessage = "Password can have at most 50 characters")]
         public string? Password { get; set; }
+
+        [Required]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        public string? ConfirmPassword { get; set; }
     }
 }
