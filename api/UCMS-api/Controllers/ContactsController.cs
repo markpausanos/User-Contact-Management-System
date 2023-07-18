@@ -23,7 +23,7 @@ namespace User_Contact_Management_System.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateContact(ContactCreateDto contact)
+        public async Task<IActionResult> CreateContact([FromBody] ContactCreateDto contact)
         {
             try
             {
@@ -99,7 +99,7 @@ namespace User_Contact_Management_System.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContact([FromRoute] string id, ContactUpdateDto contact)
+        public async Task<IActionResult> UpdateContact([FromRoute] string id, [FromBody] ContactUpdateDto contact)
         {
             try
             {

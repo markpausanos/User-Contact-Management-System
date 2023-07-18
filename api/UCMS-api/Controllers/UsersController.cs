@@ -26,7 +26,7 @@ namespace User_Contact_Management_System.Controllers
         [Consumes("application/json")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(UserCreateDto user)
+        public async Task<IActionResult> Register([FromBody] UserCreateDto user)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace User_Contact_Management_System.Controllers
         [Consumes("application/json")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(UserLoginDto user)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto user)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
-        [HttpPost("RefreshToken")]
+        [HttpPost("Tokens/Refresh")]
         [Consumes("application/json")]
         [Produces("application/json")]
         public async Task<IActionResult> RefreshToken([FromBody] UserTokenRequestDto tokenRequest)
@@ -102,11 +102,11 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
-        [HttpPut("UpdateDetails")]
+        [HttpPut("Details")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [Authorize]
-        public async Task<IActionResult> UpdateUser(UserUpdateDetailsDto user)
+        public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDetailsDto user)
         {
             try
             {
@@ -129,11 +129,11 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
-        [HttpPut("UpdatePassword")]
+        [HttpPut]
         [Consumes("application/json")]
         [Produces("application/json")]
         [Authorize]
-        public async Task<IActionResult> UpdatePassword(UserUpdatePasswordDto user)
+        public async Task<IActionResult> UpdatePassword([FromBody] UserUpdatePasswordDto user)
         {
             try
             {
