@@ -8,11 +8,10 @@ using User_Contact_Management_System.Repositories.RefreshTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace UCMS_test
 {
-    public class UserServiceTest
+    public class UserServiceTests
     {
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<IRefreshTokenRepository> _mockRefreshTokenRepository;
@@ -21,7 +20,7 @@ namespace UCMS_test
         private readonly JwtConfig _jwtConfig;
         private readonly TokenValidationParameters _tokenValidationParameters;
 
-        public UserServiceTest()
+        public UserServiceTests()
         {
             _mockMapper = new Mock<IMapper>();
             _mockUserRepository = new Mock<IUserRepository>();
