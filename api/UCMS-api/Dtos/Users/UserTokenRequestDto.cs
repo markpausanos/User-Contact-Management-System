@@ -1,0 +1,13 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace User_Contact_Management_System.Dtos.Users
+{
+    public class UserTokenRequestDto
+    {
+        [Required]
+        public string? Token { get; set; }
+
+        [Required]
+        public string? RefreshToken { get; set; }
+    }
+}

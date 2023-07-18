@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FoolProof.Core;
+using System.ComponentModel.DataAnnotations;
 
 namespace User_Contact_Management_System.Dtos.Users
 {
@@ -10,6 +11,7 @@ namespace User_Contact_Management_System.Dtos.Users
         public string? OldPassword { get; set; }
 
         [Required]
+        [NotEqualTo(nameof(OldPassword))]
         [MinLength(6, ErrorMessage = "Password too short")]
         [MaxLength(50, ErrorMessage = "Password can have at most 50 characters")]
         public string? NewPassword { get; set; }
