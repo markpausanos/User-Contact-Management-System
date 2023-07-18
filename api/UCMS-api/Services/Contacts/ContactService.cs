@@ -7,10 +7,10 @@ namespace User_Contact_Management_System.Services.Contacts
 {
     public class ContactService : IContactService
     {
-        private readonly IContactRepository _contactRepository;
         private readonly IMapper _mapper;
+        private readonly IContactRepository _contactRepository;
 
-        public ContactService(IContactRepository contactRepository, IMapper mapper)
+        public ContactService(IMapper mapper, IContactRepository contactRepository)
         {
             _contactRepository = contactRepository;
             _mapper = mapper;
@@ -28,7 +28,7 @@ namespace User_Contact_Management_System.Services.Contacts
 
         public async Task<IEnumerable<ContactReturnDto>> GetAllContacts(string userId)
         {
-            var user = new ApplicationUser() { Id = userId };
+            var user = new ApplicationUser { Id = userId };
             var contacts = await _contactRepository.GetAllContacts(userId);
             return contacts.Select(contact =>
             {
@@ -40,7 +40,7 @@ namespace User_Contact_Management_System.Services.Contacts
 
         public async Task<ContactReturnDto?> GetContact(string userId, string id)
         {
-            var user = new ApplicationUser() { Id = userId };
+            var user = new ApplicationUser { Id = userId };
             var contact = await _contactRepository.GetContact(userId, id);
 
             if (contact == null)

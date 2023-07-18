@@ -33,7 +33,7 @@ namespace User_Contact_Management_System.Controllers
                 var userId = _userUtils.GetCurrentUser(HttpContext);
 
                 if (userId == null)
-                    return BadRequest("Invalid user.");
+                    return Unauthorized();
 
                 var createdContact = await _contactService.CreateContact(userId, contact);
 
@@ -47,7 +47,7 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
-
+            
         [HttpGet]
         public async Task<IActionResult> GetAllContacts()
         {
