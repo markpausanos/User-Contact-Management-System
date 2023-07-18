@@ -17,7 +17,6 @@ namespace UCMS_test
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<IRefreshTokenRepository> _mockRefreshTokenRepository;
         private readonly Mock<IUserRepository> _mockUserRepository;
-        private readonly Mock<JwtSecurityTokenHandler> _mockJwtSecurityTokenHandler;
         private readonly UserService _userService;
         private readonly JwtConfig _jwtConfig;
         private readonly TokenValidationParameters _tokenValidationParameters;
@@ -27,7 +26,6 @@ namespace UCMS_test
             _mockMapper = new Mock<IMapper>();
             _mockUserRepository = new Mock<IUserRepository>();
             _mockRefreshTokenRepository = new Mock<IRefreshTokenRepository>();
-            _mockJwtSecurityTokenHandler = new Mock<JwtSecurityTokenHandler>();
             _jwtConfig = new JwtConfig
             {
                 Secret = "This is a very secret key",
