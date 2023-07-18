@@ -37,11 +37,14 @@ namespace User_Contact_Management_System.Repositories.Users
             }
 
         }
-        public Task<ApplicationUser> GetUserByUsername(string username) =>
-            _userManager.FindByNameAsync(username);
 
-        public Task<ApplicationUser> GetUserByEmail(string email) =>
-            _userManager.FindByEmailAsync(email);
+        public async Task<ApplicationUser?> GetUserById(string id) =>
+            await _userManager.FindByIdAsync(id);
+        public async Task<ApplicationUser?> GetUserByUsername(string username) =>
+            await _userManager.FindByNameAsync(username);
+
+        public async Task<ApplicationUser?> GetUserByEmail(string email) =>
+            await _userManager.FindByEmailAsync(email);
 
         public async Task<bool> CheckPasswordIsValid(ApplicationUser user, string password)
         {
@@ -54,20 +57,11 @@ namespace User_Contact_Management_System.Repositories.Users
                 throw new Exception(ex.Message);
             }
         }
-        public Task<bool> DeleteUser(int id)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<bool> UpdateUserDetails(ApplicationUser user)
         {
             try
             {
-                var applicationUser = await _userManager.FindByIdAsync(user.Id);
-
-                applicationUser.FirstName = user.FirstName ?? applicationUser.FirstName;
-                applicationUser.LastName = user.LastName ?? applicationUser.LastName;
-
-                return await _userManager.UpdateAsync(applicationUser) != null;
+                return await _userManager.UpdateAsync(user) != null;
             }
             catch (Exception ex)
             {
@@ -79,16 +73,14 @@ namespace User_Contact_Management_System.Repositories.Users
         {
             try
             {
-                var applicationUser = await _userManager.FindByIdAsync(user.Id);
-
-                if (!await _userManager.CheckPasswordAsync(applicationUser, oldPassword))
+                if (!await _userManager.CheckPasswordAsync(user, oldPassword))
                 {
                     return false;
                 }
 
-                applicationUser.PasswordHash = _userManager.PasswordHasher.HashPassword(applicationUser, newPassword);
+                user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, newPassword);
 
-                return await _userManager.UpdateAsync(applicationUser) != null;
+                return await _userManager.UpdateAsync(user) != null;
             }
             catch (Exception ex)
             {

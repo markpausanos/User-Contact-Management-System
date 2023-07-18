@@ -9,5 +9,6 @@ namespace User_Contact_Management_System.Data
     {
         public APIDbContext(DbContextOptions<APIDbContext> options) : base(options) { }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

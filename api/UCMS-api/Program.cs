@@ -1,15 +1,20 @@
+using FoolProof.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+
 using User_Contact_Management_System.Configurations;
 using User_Contact_Management_System.Data;
 using User_Contact_Management_System.Models;
+using User_Contact_Management_System.Repositories.Contacts;
+using User_Contact_Management_System.Repositories.RefreshTokens;
 using User_Contact_Management_System.Repositories.Users;
+using User_Contact_Management_System.Services.Contacts;
 using User_Contact_Management_System.Services.Users;
+using User_Contact_Management_System.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +27,8 @@ builder.Services.AddDbContext<APIDbContext>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 ConfigureServices(builder.Services, builder.Configuration);
 var app = builder.Build();
 
@@ -46,6 +53,8 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<APIDbContext>()
         .AddDefaultTokenProviders();
+
+    services.AddFoolProof();
 
     services.AddSwaggerGen(options =>
     {
@@ -81,7 +90,20 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     services.Configure<JwtConfig>(configuration.GetSection("JwtConfig"));
     var jwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfig>();
+    var tokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        RequireExpirationTime = false,
+        ValidIssuer = jwtConfig.Issuer,
+        ValidAudience = jwtConfig.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret!))
+    };
+
     services.AddSingleton(jwtConfig);
+    services.AddSingleton(tokenValidationParameters);
 
     services.AddAuthentication(options =>
     {
@@ -91,21 +113,16 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
     })
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            RequireExpirationTime = false,
-            ValidIssuer = jwtConfig.Issuer,
-            ValidAudience = jwtConfig.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret!))
-        };
+        options.SaveToken = true;
+        options.TokenValidationParameters = tokenValidationParameters;
     });
 
 
     services.AddTransient<APIDbContext>();
+    services.AddTransient<UserUtils>();
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<IContactService, ContactService>();
+    services.AddScoped<IContactRepository, ContactRepository>();
+    services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 }
