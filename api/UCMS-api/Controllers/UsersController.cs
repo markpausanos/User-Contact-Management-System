@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using User_Contact_Management_System.Dtos.Users;
 using User_Contact_Management_System.Models;
 using User_Contact_Management_System.Services.Users;
+using User_Contact_Management_System.Utils;
 
 namespace User_Contact_Management_System.Controllers
 {
@@ -13,21 +13,13 @@ namespace User_Contact_Management_System.Controllers
     {
         private readonly ILogger<IUserService> _logger;
         private readonly IUserService _userService;
+        private readonly UserUtils _userUtils;
 
-        public UsersController(ILogger<IUserService> logger, IUserService userService)
+        public UsersController(ILogger<IUserService> logger, IUserService userService, UserUtils userUtils)
         {
             _logger = logger;
             _userService = userService;
-        }
-
-        private IActionResult GetBadRequest(string errorMessage)
-        {
-            return BadRequest(new AuthResult()
-            {
-                Result = false,
-                Token = null,
-                Error = errorMessage
-            });
+            _userUtils = userUtils;
         }
 
         [HttpPost("Register")]
@@ -43,7 +35,12 @@ namespace User_Contact_Management_System.Controllers
 
                 var authResult = await _userService.Register(user);
 
-                return authResult != null ? Ok(authResult) : GetBadRequest("Username or Email already exists.");
+                if (authResult == null)
+                    return GetBadRequest("Username or Email already exists.");
+
+                SetRefreshToken(authResult.RefreshToken!);
+
+                return Ok(authResult);
             }
             catch (Exception e)
             {
@@ -65,11 +62,42 @@ namespace User_Contact_Management_System.Controllers
 
                 var authResult = await _userService.Login(user);
 
-                return authResult != null ? Ok(authResult) : GetBadRequest("Invalid credentials.");
+                if (authResult == null)
+                    return GetBadRequest("Invalid credentials.");
+
+                SetRefreshToken(authResult.RefreshToken!);
+
+                return Ok(authResult);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"{nameof(_userService.Login)} threw an exception");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("RefreshToken")]
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        public async Task<IActionResult> RefreshToken([FromBody] UserTokenRequestDto tokenRequest)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return GetBadRequest("Invalid request.");
+
+                var authResult = await _userService.VerifyToken(tokenRequest);
+
+                if (authResult == null)
+                    return GetBadRequest("Invalid token.");
+
+                SetRefreshToken(authResult.RefreshToken!);
+
+                return Ok(authResult);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{nameof(_userService.VerifyToken)} threw an exception");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -85,7 +113,8 @@ namespace User_Contact_Management_System.Controllers
                 if (!ModelState.IsValid)
                     return GetBadRequest("Invalid request.");
 
-                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = _userUtils.GetCurrentUser(HttpContext);
+
                 if (userId == null)
                     return GetBadRequest("Invalid user.");
 
@@ -111,7 +140,8 @@ namespace User_Contact_Management_System.Controllers
                 if (!ModelState.IsValid)
                     return GetBadRequest("Invalid request.");
 
-                var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = _userUtils.GetCurrentUser(HttpContext);
+
                 if (userId == null)
                     return GetBadRequest("Invalid user.");
 
@@ -124,6 +154,26 @@ namespace User_Contact_Management_System.Controllers
                 _logger.LogError(e, $"{nameof(_userService.UpdateUserPassword)} threw an exception");
                 return StatusCode(500, "Internal server error");
             }
+        }
+        private IActionResult GetBadRequest(string errorMessage)
+        {
+            return BadRequest(new AuthResult()
+            {
+                Result = false,
+                Token = null,
+                Error = errorMessage
+            });
+        }
+
+        private void SetRefreshToken(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions()
+            {
+                HttpOnly = true,
+                Expires = DateTime.Now.AddMonths(2)
+            };
+
+            Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
         }
     }
 }
