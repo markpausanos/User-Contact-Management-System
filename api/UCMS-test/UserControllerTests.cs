@@ -8,22 +8,24 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using User_Contact_Management_System.Models;
+using User_Contact_Management_System.Utils;
 
 namespace UCMS_test
 {
     public class UsersControllerTest
     {
+        private readonly Mock<UserUtils> _mockUserUtils;
         private readonly Mock<ILogger<IUserService>> _mockLogger;
         private readonly Mock<IUserService> _mockUserService;
         private readonly UsersController _usersController;
 
         public UsersControllerTest()
         {
+            _mockUserUtils = new Mock<UserUtils>();
             _mockLogger = new Mock<ILogger<IUserService>>();
             _mockUserService = new Mock<IUserService>();
-            _usersController = new UsersController(_mockLogger.Object, _mockUserService.Object);
+            _usersController = new UsersController(_mockLogger.Object, _mockUserService.Object, _mockUserUtils.Object);
 
-            // Mock HttpContext.User to simulate an authorized user
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "TestUserId"),
@@ -45,10 +47,12 @@ namespace UCMS_test
                 FirstName = "Test",
                 LastName = "User"
             };
+
             var authResult = new AuthResult
             {
                 Result = true,
-                Token = "TestToken"
+                Token = "TestToken",
+                RefreshToken = "TestRefreshToken"
             };
 
             _mockUserService.Setup(x => x.Register(userCreateDto))
@@ -63,7 +67,7 @@ namespace UCMS_test
         }
 
         [Fact]
-        public async Task Register_WithExistingUsername_ReturnsBadRequest()
+        public async Task Register_WithExistingUsernameOrEmail_ReturnsBadRequest()
         {
             // Arrange
             var userCreateDto = new UserCreateDto
@@ -76,7 +80,7 @@ namespace UCMS_test
             };
 
             _mockUserService.Setup(x => x.Register(userCreateDto))
-                .ReturnsAsync((AuthResult)null);
+                .ReturnsAsync(() => null);
 
             // Act
             var result = await _usersController.Register(userCreateDto);
@@ -98,10 +102,12 @@ namespace UCMS_test
                 Username = "testuser",
                 Password = "Test1234"
             };
+
             var authResult = new AuthResult
             {
                 Result = true,
-                Token = "TestToken"
+                Token = "TestToken",
+                RefreshToken = "TestRefreshToken"
             };
 
             _mockUserService.Setup(x => x.Login(userLoginDto))
@@ -126,7 +132,7 @@ namespace UCMS_test
             };
 
             _mockUserService.Setup(x => x.Login(userLoginDto))
-                .ReturnsAsync((AuthResult)null);
+                .ReturnsAsync(() => null);
 
             // Act
             var result = await _usersController.Login(userLoginDto);
@@ -137,6 +143,58 @@ namespace UCMS_test
             Assert.False(returnedAuthResult.Result);
             Assert.Null(returnedAuthResult.Token);
             Assert.Equal("Invalid credentials.", returnedAuthResult.Error);
+        }
+
+        [Fact]
+        public async Task RefreshToken_WithValidRequest_ReturnsOk()
+        {
+            // Arrange
+            var tokenRequest = new UserTokenRequestDto
+            {
+                Token = "TestToken",
+                RefreshToken = "TestRefreshToken",
+            };
+
+            var authResult = new AuthResult
+            {
+                Result = true,
+                Token = "TestNewToken",
+                RefreshToken = "TestNewRefreshToken"
+            };
+
+            _mockUserService.Setup(x => x.VerifyToken(tokenRequest))
+                .ReturnsAsync(authResult);
+
+            // Act
+            var result = await _usersController.RefreshToken(tokenRequest);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal(authResult, okResult.Value);
+        }
+
+
+        [Fact]
+        public async Task RefreshToken_WithInvalidRequest_ReturnsBadRequest()
+        {
+            // Arrange
+            var tokenRequest = new UserTokenRequestDto
+            {
+                Token = "TestToken",
+                RefreshToken = "TestRefreshToken",
+            };
+
+            _mockUserService.Setup(x => x.VerifyToken(tokenRequest))
+                .ReturnsAsync(() => null);
+
+            // Act
+            var result = await _usersController.RefreshToken(tokenRequest);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            var returnedAuthResult = Assert.IsType<AuthResult>(badRequestResult.Value);
+            Assert.False(returnedAuthResult.Result);
+            Assert.Null(returnedAuthResult.Token);
+            Assert.Equal("Invalid token.", returnedAuthResult.Error);
         }
 
         [Fact]
