@@ -46,8 +46,12 @@ namespace User_Contact_Management_System.Services.Users
            
             var applicationUser = _mapper.Map<ApplicationUser>(user);   
 
-            var createdUserId = await _userRepository.CreateUser(applicationUser, user.Password!);
-            applicationUser.Id = createdUserId;
+            var createdUser = await _userRepository.CreateUser(applicationUser, user.Password!);
+
+            if (createdUser == null)
+                return null;
+
+            applicationUser = createdUser;
 
             return await GetAuthResult(applicationUser);
         }
@@ -149,7 +153,7 @@ namespace User_Contact_Management_System.Services.Users
             var refreshTokenString = GenerateRefreshToken(applicationUser.Id);
             var refreshTokenObject = await _refreshTokenRepository.CreateRefreshToken(refreshTokenString);
 
-            return new AuthResult()
+            return new AuthResult
             {
                 Result = true,
                 Token = token,
@@ -182,7 +186,7 @@ namespace User_Contact_Management_System.Services.Users
 
         private RefreshToken GenerateRefreshToken(string userId)
         {
-            var refreshToken = new RefreshToken()
+            var refreshToken = new RefreshToken
             {
                 ApplicationUserId = userId,
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),

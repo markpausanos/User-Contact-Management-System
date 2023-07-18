@@ -5,7 +5,7 @@ namespace User_Contact_Management_System.Repositories.Users
 {
     public interface IUserRepository
     {
-        Task<string?> CreateUser(ApplicationUser user, string password);
+        Task<ApplicationUser?> CreateUser(ApplicationUser user, string password);
         Task<ApplicationUser?> GetUserById(string id);
         Task<ApplicationUser?> GetUserByUsername(string username);
         Task<ApplicationUser?> GetUserByEmail(string email);

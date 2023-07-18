@@ -14,7 +14,7 @@ namespace User_Contact_Management_System.Repositories.Users
             _userManager = userManager;
         }
 
-        public async Task<string?> CreateUser(ApplicationUser user, string password)
+        public async Task<ApplicationUser?> CreateUser(ApplicationUser user, string password)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -24,7 +24,7 @@ namespace User_Contact_Management_System.Repositories.Users
 
                     if (isCreated.Succeeded)
                     {
-                        return await _userManager.GetUserIdAsync(user);
+                        return await _userManager.FindByNameAsync(user.UserName);
                     }
 
                     return null;

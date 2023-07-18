@@ -157,7 +157,7 @@ namespace User_Contact_Management_System.Controllers
         }
         private IActionResult GetBadRequest(string errorMessage)
         {
-            return BadRequest(new AuthResult()
+            return BadRequest(new AuthResult
             {
                 Result = false,
                 Token = null,
