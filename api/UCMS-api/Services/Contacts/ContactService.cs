@@ -7,10 +7,10 @@ namespace User_Contact_Management_System.Services.Contacts
 {
     public class ContactService : IContactService
     {
-        private readonly IContactRepository _contactRepository;
         private readonly IMapper _mapper;
+        private readonly IContactRepository _contactRepository;
 
-        public ContactService(IContactRepository contactRepository, IMapper mapper)
+        public ContactService(IMapper mapper, IContactRepository contactRepository)
         {
             _contactRepository = contactRepository;
             _mapper = mapper;
