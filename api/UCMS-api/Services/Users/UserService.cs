@@ -71,6 +71,14 @@ namespace User_Contact_Management_System.Services.Users
             return await GetAuthResult(applicationUser);
         }
 
+        public async Task<bool> Logout(UserTokenRequestDto tokenRequest)
+        {
+            return await _refreshTokenRepository.SetTokenRevoked(new RefreshToken
+            {
+                Token = tokenRequest.RefreshToken
+            });
+        }
+
         public async Task<AuthResult?> VerifyToken(UserTokenRequestDto tokenRequest)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
