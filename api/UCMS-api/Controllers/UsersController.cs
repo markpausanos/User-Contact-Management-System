@@ -76,6 +76,31 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        [HttpPost("Logout")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var refreshToken = Request.Cookies["refreshToken"];
+
+                if (refreshToken == null)
+                    return Ok(false);
+
+                var authResult = await _userService.Logout(new UserTokenRequestDto
+                {
+                    RefreshToken = refreshToken
+                });
+ 
+                return Ok(authResult);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{nameof(_userService.Logout)} threw an exception");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         [HttpPost("Tokens/Refresh")]
         [Consumes("application/json")]
         [Produces("application/json")]
