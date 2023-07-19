@@ -70,11 +70,13 @@ namespace User_Contact_Management_System.Repositories.RefreshTokens
                 try
                 {
                     var refreshTokenObject = await _context.RefreshTokens
-                        .Where(refreshTokenExists => refreshTokenExists.Token == refreshToken.Token)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefaultAsync(refreshTokenExists => refreshTokenExists.Token == refreshToken.Token);
 
-                    refreshToken.IsRevoked = true;
-                    _context.Entry(refreshToken).State = EntityState.Modified;
+                    if (refreshTokenObject == null)
+                        return false;
+
+                    refreshTokenObject.IsRevoked = true;
+                    _context.Entry(refreshTokenObject).State = EntityState.Modified;
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
@@ -96,11 +98,13 @@ namespace User_Contact_Management_System.Repositories.RefreshTokens
                 try
                 {
                     var refreshTokenObject = await _context.RefreshTokens
-                        .Where(refreshTokenExists => refreshTokenExists.Token == refreshToken.Token)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefaultAsync(refreshTokenExists => refreshTokenExists.Token == refreshToken.Token);
 
-                    refreshToken.IsUsed = true;
-                    _context.Entry(refreshToken).State = EntityState.Modified;
+                    if (refreshTokenObject == null)
+                        return false;
+
+                    refreshTokenObject.IsRevoked = true;
+                    _context.Entry(refreshTokenObject).State = EntityState.Modified;
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
