@@ -82,7 +82,7 @@ namespace User_Contact_Management_System.Controllers
         {
             try
             {
-                var refreshToken = Request.Cookies["refreshToken"];
+                var refreshToken = Request.Cookies["RefreshToken"];
 
                 if (refreshToken == null)
                     return Ok(false);
@@ -91,7 +91,10 @@ namespace User_Contact_Management_System.Controllers
                 {
                     RefreshToken = refreshToken
                 });
- 
+
+                Response.Cookies.Delete("RefreshToken");
+                Response.Cookies.Delete("AccessToken");
+
                 return Ok(authResult);
             }
             catch (Exception e)
