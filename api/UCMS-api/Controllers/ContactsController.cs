@@ -23,6 +23,7 @@ namespace User_Contact_Management_System.Controllers
         }
 
         [HttpPost]
+        [Consumes("application/json")]
         public async Task<IActionResult> CreateContact([FromBody] ContactCreateDto contact)
         {
             try
@@ -99,6 +100,7 @@ namespace User_Contact_Management_System.Controllers
         }
 
         [HttpPut("{id}")]
+        [Consumes("application/json")]
         public async Task<IActionResult> UpdateContact([FromRoute] string id, [FromBody] ContactUpdateDto contact)
         {
             try
