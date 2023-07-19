@@ -69,6 +69,10 @@ namespace User_Contact_Management_System.Repositories.RefreshTokens
             {
                 try
                 {
+                    var refreshTokenObject = await _context.RefreshTokens
+                        .Where(refreshTokenExists => refreshTokenExists.Token == refreshToken.Token)
+                        .FirstOrDefaultAsync();
+
                     refreshToken.IsRevoked = true;
                     _context.Entry(refreshToken).State = EntityState.Modified;
 
@@ -91,6 +95,10 @@ namespace User_Contact_Management_System.Repositories.RefreshTokens
             {
                 try
                 {
+                    var refreshTokenObject = await _context.RefreshTokens
+                        .Where(refreshTokenExists => refreshTokenExists.Token == refreshToken.Token)
+                        .FirstOrDefaultAsync();
+
                     refreshToken.IsUsed = true;
                     _context.Entry(refreshToken).State = EntityState.Modified;
 
