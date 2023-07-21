@@ -5,8 +5,8 @@ const BASE_URL = `${config.API_URL}/Users`;
 const REFRESH_TOKEN_URL = `${BASE_URL}/Tokens/Refresh`;
 
 const UsersService = {
-	login: (user) => axios.post(BASE_URL, user),
-	register: (user) => axios.post(BASE_URL, user),
+	login: (user) => axios.post(`${BASE_URL}/Login`, user),
+	register: (user) => axios.post(`${BASE_URL}/Register`, user),
 	refreshToken: (userTokenRequest) =>
 		axios.post(REFRESH_TOKEN_URL, userTokenRequest),
 	updatePassword: (userUpdatePassword) =>
