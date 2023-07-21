@@ -46,6 +46,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseCors();
 app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
@@ -104,6 +105,13 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     services.AddSingleton(jwtConfig);
     services.AddSingleton(tokenValidationParameters);
+
+    services.AddCors(options => options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    }));
 
     services.AddAuthentication(options =>
     {
