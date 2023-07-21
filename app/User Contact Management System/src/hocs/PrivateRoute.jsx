@@ -1,16 +1,21 @@
 import { useContext } from "react";
-import { Route, Navigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Navigate, Outlet } from "react-router-dom";
 import { UserContext } from "../contexts";
 
-const PrivateRoute = ({ ...rest }) => {
+const PrivateRoute = ({ children }) => {
 	const { user } = useContext(UserContext);
 
 	// The page can be accessed by the user
 	if (user) {
-		return <Route {...rest} />;
+		return children ? children : <Outlet />;
 	}
 
-	return <Route name="Login" render={() => <Navigate to="/login" />} />;
+	return <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;
+
+PrivateRoute.propTypes = {
+	children: PropTypes.node,
+};

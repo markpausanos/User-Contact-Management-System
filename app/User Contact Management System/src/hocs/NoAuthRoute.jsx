@@ -1,16 +1,21 @@
 import { useContext } from "react";
-import { Route, Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Outlet, Navigate } from "react-router-dom";
 import { UserContext } from "../contexts";
 
-const NoAuthRoute = ({ ...rest }) => {
+const NoAuthRoute = ({ children }) => {
 	const { user } = useContext(UserContext);
 
+	// The page will be changed to home
 	if (user) {
-		return <Route name="Student" render={() => <Redirect to="/student" />} />;
+		return <Navigate to="/home" replace />;
 	}
 
-	// the page can be accessed by the user
-	return <Route {...rest} />;
+	return children ? children : <Outlet />;
 };
 
 export default NoAuthRoute;
+
+NoAuthRoute.propTypes = {
+	children: PropTypes.node,
+};
