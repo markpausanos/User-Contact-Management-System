@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import Cookies from "universal-cookie";
 import { UserContext } from "./contexts";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { PrivateRoute, NoAuthRoute } from "./hocs";
 import { PulseLoader } from "react-spinners";
-import { Login, ScreenNoExist } from "./screens/public";
+import { Login, ForgotPassword, ScreenNoExist, SignUp } from "./screens/public";
 import "./styles/App.scss";
 import { createTheme, ThemeProvider } from "@mui/material";
+import Home from "./screens/public/Home";
 
 const cookies = new Cookies();
 const theme = createTheme({
@@ -16,21 +17,25 @@ const theme = createTheme({
 });
 
 function App() {
-	const [user, setUser] = useState(cookies.get("user"));
+	const [user, setUser] = useState(cookies.get("User"));
 
 	const loginUpdate = (userData) => {
-		cookies.set("user", userData, {
+		cookies.set("User", userData, {
 			path: "/",
 		});
 
+		console.log(`hello ${userData}`);
 		setUser(userData);
 	};
 
 	const loginRestart = () => {
-		cookies.remove("user", {
+		cookies.remove("User", {
 			path: "/",
 		});
-		cookies.remove("accessToken", {
+		cookies.remove("AccessToken", {
+			path: "/",
+		});
+		cookies.remove("RefreshToken", {
 			path: "/",
 		});
 
@@ -43,20 +48,36 @@ function App() {
 				<UserContext.Provider value={{ user, loginUpdate, loginRestart }}>
 					<BrowserRouter>
 						<Routes>
-							<Route
-								exact
-								path="/"
-								element={<PrivateRoute>{<div>Hello world!</div>}</PrivateRoute>}
-							/>
+							<Route exact path="/" element={<Navigate to="/home" replace />} />
 							<Route
 								path="/home"
-								element={<PrivateRoute element={<div>Hello world!</div>} />}
+								element={
+									<PrivateRoute>
+										<Home />
+									</PrivateRoute>
+								}
 							/>
 							<Route
 								path="/login"
 								element={
 									<NoAuthRoute>
 										<Login />
+									</NoAuthRoute>
+								}
+							/>
+							<Route
+								path="/sign-up"
+								element={
+									<NoAuthRoute>
+										<SignUp />
+									</NoAuthRoute>
+								}
+							/>
+							<Route
+								path="/forgot-password"
+								element={
+									<NoAuthRoute>
+										<ForgotPassword />
 									</NoAuthRoute>
 								}
 							/>
