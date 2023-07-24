@@ -85,24 +85,24 @@ namespace User_Contact_Management_System.Services.Users
 
             try
             {
-                var tokenInValidation = 
-                     jwtTokenHandler.ValidateToken(tokenRequest.Token, _tokenValidationParameters, out var validatedToken);
+                //var tokenInValidation = 
+                //     jwtTokenHandler.ValidateToken(tokenRequest.Token, _tokenValidationParameters, out var validatedToken);
 
-                if (!(validatedToken is JwtSecurityToken jwtSecurityToken))
-                    return null;
+                //if (!(validatedToken is JwtSecurityToken jwtSecurityToken))
+                //    return null;
 
-                var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
-                    StringComparison.InvariantCultureIgnoreCase);
+                //var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
+                //    StringComparison.InvariantCultureIgnoreCase);
 
-                if (!result)
-                    return null;
+                //if (!result)
+                //    return null;
 
-                var utcExpiryDate = long.Parse(tokenInValidation.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp)!.Value);
-                var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-                var expiryDate = dateTime.AddSeconds(utcExpiryDate).ToUniversalTime();
+                //var utcExpiryDate = long.Parse(tokenInValidation.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp)!.Value);
+                //var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                //var expiryDate = dateTime.AddSeconds(utcExpiryDate).ToUniversalTime();
 
-                if (expiryDate > DateTime.Now)
-                    return null;
+                //if (expiryDate > DateTime.Now)
+                //    return null;
 
                 var storedToken = await _refreshTokenRepository.GetRefreshToken(tokenRequest.RefreshToken!);
 
@@ -128,6 +128,15 @@ namespace User_Contact_Management_System.Services.Users
             }
         }
 
+        public async Task<UserReturnDto?> GetUser(string id)
+        {
+            var applicationUser = await _userRepository.GetUserById(id);
+
+            if (applicationUser == null)
+                return null;
+
+            return _mapper.Map<UserReturnDto>(applicationUser);
+        }
         public async Task<bool> UpdateUserDetails(string id, UserUpdateDetailsDto user)
         {
             var applicationUser = await _userRepository.GetUserById(id);

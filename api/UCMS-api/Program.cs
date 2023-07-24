@@ -39,6 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -46,7 +47,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors();
+
 app.Run();
 
 void ConfigureServices(IServiceCollection services, IConfiguration configuration)
@@ -108,9 +109,10 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     services.AddCors(options => options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:5173")
+        builder.WithOrigins("http://localhost:5174")
         .AllowAnyMethod()
-        .AllowAnyHeader();
+        .AllowAnyHeader()
+        .AllowCredentials();
     }));
 
     services.AddAuthentication(options =>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using User_Contact_Management_System.Configurations;
 using User_Contact_Management_System.Dtos.Users;
 using User_Contact_Management_System.Models;
 using User_Contact_Management_System.Services.Users;
@@ -14,12 +15,18 @@ namespace User_Contact_Management_System.Controllers
         private readonly ILogger<IUserService> _logger;
         private readonly IUserService _userService;
         private readonly UserUtils _userUtils;
+        private readonly JwtConfig _jwtConfig;
 
-        public UsersController(ILogger<IUserService> logger, IUserService userService, UserUtils userUtils)
+        public UsersController(
+            ILogger<IUserService> logger, 
+            IUserService userService, 
+            UserUtils userUtils, 
+            JwtConfig jwtConfig)
         {
             _logger = logger;
             _userService = userService;
             _userUtils = userUtils;
+            _jwtConfig = jwtConfig;
         }
 
         [HttpPost("Register")]
@@ -38,7 +45,7 @@ namespace User_Contact_Management_System.Controllers
                 if (authResult == null)
                     return GetBadRequest("Username or Email already exists.");
 
-                SetRefreshToken(authResult.RefreshToken!);
+                SetTokens(authResult.Token!, authResult.RefreshToken!);
 
                 return Ok(authResult);
             }
@@ -65,41 +72,13 @@ namespace User_Contact_Management_System.Controllers
                 if (authResult == null)
                     return GetBadRequest("Invalid credentials.");
 
-                SetRefreshToken(authResult.RefreshToken!);
+                SetTokens(authResult.Token!, authResult.RefreshToken!);
 
                 return Ok(authResult);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"{nameof(_userService.Login)} threw an exception");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        [HttpPost("Logout")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Logout()
-        {
-            try
-            {
-                var refreshToken = Request.Cookies["RefreshToken"];
-
-                if (refreshToken == null)
-                    return Ok(false);
-
-                var authResult = await _userService.Logout(new UserTokenRequestDto
-                {
-                    RefreshToken = refreshToken
-                });
-
-                Response.Cookies.Delete("RefreshToken");
-                Response.Cookies.Delete("AccessToken");
-
-                return Ok(authResult);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{nameof(_userService.Logout)} threw an exception");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -119,13 +98,36 @@ namespace User_Contact_Management_System.Controllers
                 if (authResult == null)
                     return GetBadRequest("Invalid token.");
 
-                SetRefreshToken(authResult.RefreshToken!);
+                SetTokens(authResult.Token!, authResult.RefreshToken!);
 
                 return Ok(authResult);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"{nameof(_userService.VerifyToken)} threw an exception");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            try
+            {
+                var accessToken = Request.Cookies["AccessToken"];
+                var userId = _userUtils.GetCurrentUser(HttpContext);
+
+                if (userId == null)
+                    return GetBadRequest("Invalid request.");
+
+                var user = await _userService.GetUser(userId);
+
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{nameof(_userService.GetUser)} threw an exception");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -193,15 +195,30 @@ namespace User_Contact_Management_System.Controllers
             });
         }
 
-        private void SetRefreshToken(string refreshToken)
+        private void SetTokens(string token, string refreshToken)
         {
-            var cookieOptions = new CookieOptions()
+            var RefreshTokenCookieOptions = new CookieOptions()
             {
-                HttpOnly = true,
-                Expires = DateTime.Now.AddMonths(2)
+                HttpOnly = false,
+                Expires = DateTime.UtcNow.AddMonths(2),
+                Path = "/",
+                IsEssential = true,
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
 
-            Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
+            var TokenCookieOptions = new CookieOptions()
+            {
+                HttpOnly = false,
+                Expires = DateTime.UtcNow.Add(_jwtConfig.ExpirationTimeFrame),
+                Path = "/",
+                IsEssential = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
+            };
+
+            Response.Cookies.Append("AccessToken", token, TokenCookieOptions);
+            Response.Cookies.Append("RefreshToken", refreshToken, RefreshTokenCookieOptions);
         }
     }
 }
