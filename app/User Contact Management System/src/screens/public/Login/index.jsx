@@ -1,12 +1,12 @@
 import { useState, useContext } from "react";
-import Cookies from "universal-cookie";
+import { useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { isEmpty } from "lodash";
 import { UserContext } from "../../../contexts";
 import { UsersService } from "../../../services";
 import styles from "./styles.module.scss";
+import { Header } from "../../../components";
 import {
-	Avatar,
 	Container,
 	Paper,
 	TextField,
@@ -18,7 +18,6 @@ import {
 	IconButton,
 } from "@mui/material";
 import { PulseLoader } from "react-spinners";
-import phone from "../../../statics/images/phone.png";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const validate = (values) => {
@@ -37,26 +36,13 @@ const validate = (values) => {
 
 const Login = () => {
 	const userContext = useContext(UserContext);
-	const cookies = new Cookies();
+	const navigate = useNavigate();
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 
 	return (
 		<div className={styles.Login}>
-			<div className={styles.Login_Header}>
-				<div>
-					<Avatar
-						className={styles.Login_Header_Logo}
-						alt="LinkUp"
-						sx={{ height: "5.5vh", width: "5.5vh" }}
-						src={phone}
-						variant="circular"
-					/>
-				</div>
-				<div>
-					<h2>LinkUp</h2>
-				</div>
-			</div>
+			<Header />
 			<Container className={styles.Login_Container}>
 				<Paper elevation={10} className={styles.Login_Container_Paper}>
 					<div className={styles.Login_Container_Paper_Grid}>
@@ -87,29 +73,20 @@ const Login = () => {
 							setIsLoggingIn(true);
 
 							try {
-								const { data: loginResponse } = await UsersService.login(
-									currentFormValues
-								);
+								await UsersService.login(currentFormValues);
 
-								console.log(loginResponse.token);
+								const { data: user } = await UsersService.get();
 
-								cookies.set("AccessToken", loginResponse.token, {
-									path: "/",
+								await userContext.loginUpdate({
+									user: user,
 								});
 
-								if (currentFormValues.remember) {
-									cookies.set("RefreshToken", loginResponse.refreshToken, {
-										path: "/",
-									});
-								}
-								userContext.loginUpdate({
-									username: currentFormValues.username,
-								});
 								setErrors(null);
 							} catch (error) {
 								setErrors({
 									overall: "Invalid username and/or password.",
 								});
+								userContext.loginRestart();
 							}
 
 							setIsLoggingIn(false);
@@ -126,6 +103,7 @@ const Login = () => {
 										error={!isEmpty(errors)}
 										helperText={errors.username}
 										required
+										fullWidth
 										margin="normal"
 										size="small"
 										onChange={(e) => setFieldValue("username", e.target.value)}
@@ -138,6 +116,7 @@ const Login = () => {
 										error={!isEmpty(errors)}
 										helperText={errors.password}
 										required
+										fullWidth
 										margin="normal"
 										type={showPassword ? "text" : "password"}
 										size="small"
@@ -167,7 +146,7 @@ const Login = () => {
 												}}
 											/>
 										}
-										label="Remember me?"
+										label="Remember me"
 									/>
 								</div>
 								<div className={styles.Login_Container_Paper_Grid}>
@@ -198,6 +177,7 @@ const Login = () => {
 							className={styles.Login_Container_Paper_Typography}
 							variant="body2"
 							margin={"20px 0px 10px 0px"}
+							onClick={() => navigate("/forgot-password")}
 						>
 							Forgot your password?
 						</Typography>
@@ -205,12 +185,18 @@ const Login = () => {
 					<hr style={{ width: "50%" }} />
 					<div>
 						<Typography
-							className={styles.Login_Container_Paper_Typography}
 							variant="body2"
-							marginTop={"30px"}
+							marginTop={"10px"}
 							paddingBottom={"20px"}
 						>
-							Don{`'`}t have an account? Sign Up for LinkUp
+							Don{`'`}t have an account?
+							<br />
+							<span
+								className={styles.Login_Container_Paper_Typography}
+								onClick={() => navigate("/sign-up")}
+							>
+								Sign Up for LinkUp
+							</span>
 						</Typography>
 					</div>
 				</Paper>

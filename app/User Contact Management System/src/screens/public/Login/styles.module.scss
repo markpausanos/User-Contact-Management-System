@@ -4,33 +4,17 @@
 	display: flex;
 	flex-direction: column;
 
-	&_Header {
-		width: 100vw;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-		text-align: center;
-		padding: 0px 10px 0px 3vw;
-		gap: 10px;
-		background-color: $turqoise-200;
-		color: $cyan-400;
-		font-size: 2.5vh;
-
-		&_Logo {
-			filter: invert(20%) sepia(82%) saturate(7497%) hue-rotate(184deg)
-				brightness(89%) contrast(82%);
-		}
-	}
-
 	&_Container {
 		@include flex-center;
-		@media screen and (max-width: 600px) {
+		@media screen and (max-width: 620px) {
+			padding-top: 2vh;
 			width: 100vw !important;
 		}
 
-		@media screen and (min-width: 600px) {
+		@media screen and (min-width: 620px) {
 			padding-top: 2vh;
 			width: 50vw !important;
+			margin: auto;
 		}
 
 		min-height: 80vh !important;
@@ -67,7 +51,16 @@
 				font-family: DIN;
 				padding-left: 30vw;
 				padding-right: 2vw;
-				min-width: 25vw !important;
+
+				@media screen and (max-width: 620px) {
+					min-width: 75vw !important;
+					max-width: 75vw !important;
+				}
+
+				@media screen and (min-width: 620px) {
+					min-width: 25vw !important;
+					max-width: 25vw !important;
+				}
 			}
 
 			&_Button {
@@ -76,6 +69,14 @@
 				height: 7vh;
 				border-radius: 15px !important;
 				font-size: 3vh !important;
+
+				@media screen and (max-width: 620px) {
+					min-width: 50vw !important;
+				}
+
+				@media screen and (min-width: 620px) {
+					min-width: 25vw !important;
+				}
 			}
 
 			&_Typography {
