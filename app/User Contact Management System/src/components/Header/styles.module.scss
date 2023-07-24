@@ -1,0 +1,20 @@
+@use "../../styles/" as *;
+
+.Header {
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	text-align: center;
+	flex-direction: row;
+	padding: 0px 10px 0px 3vw;
+	gap: 10px;
+	background-color: $turqoise-200;
+	color: $cyan-400;
+	font-size: 2.5vh;
+
+	&_Logo {
+		filter: invert(20%) sepia(82%) saturate(7497%) hue-rotate(184deg)
+			brightness(89%) contrast(82%);
+	}
+}
