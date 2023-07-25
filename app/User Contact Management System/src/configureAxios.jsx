@@ -62,10 +62,6 @@ export const configureAxios = () => {
 							response.data &&
 							response.data.token
 						) {
-							cookies.set("AccessToken", response.data.token, {
-								path: "/",
-							});
-
 							// Retry the failed request with the new token
 							error.config.headers.authorization = `Bearer ${response.data.token}`;
 							return axios(error.config);

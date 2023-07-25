@@ -5,9 +5,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { PrivateRoute, NoAuthRoute } from "./hocs";
 import { PulseLoader } from "react-spinners";
 import { Login, ForgotPassword, ScreenNoExist, SignUp } from "./screens/public";
+import { Home } from "./screens/users";
 import "./styles/App.scss";
 import { createTheme, ThemeProvider } from "@mui/material";
-import Home from "./screens/public/Home";
+import { Popup } from "./components";
 
 const cookies = new Cookies();
 const theme = createTheme({
@@ -24,7 +25,6 @@ function App() {
 			path: "/",
 		});
 
-		console.log(`hello ${userData}`);
 		setUser(userData);
 	};
 
