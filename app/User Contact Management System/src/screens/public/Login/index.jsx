@@ -12,8 +12,6 @@ import {
 	TextField,
 	Button,
 	Typography,
-	FormControlLabel,
-	Checkbox,
 	InputAdornment,
 	IconButton,
 } from "@mui/material";
@@ -54,13 +52,11 @@ const Login = () => {
 						initialValues={{
 							username: "",
 							password: "",
-							remember: false,
 						}}
 						onSubmit={async (values, { setErrors }) => {
 							const currentFormValues = {
 								username: values.username,
 								password: values.password,
-								remember: values.remember,
 							};
 
 							const errors = validate(values);
@@ -77,9 +73,7 @@ const Login = () => {
 
 								const { data: user } = await UsersService.get();
 
-								await userContext.loginUpdate({
-									user: user,
-								});
+								await userContext.loginUpdate(user);
 
 								setErrors(null);
 							} catch (error) {
@@ -135,18 +129,6 @@ const Login = () => {
 												</InputAdornment>
 											),
 										}}
-									/>
-									<FormControlLabel
-										control={
-											<Checkbox
-												name="remember"
-												value={values.remember}
-												onChange={(e) => {
-													setFieldValue("remember", e.target.checked);
-												}}
-											/>
-										}
-										label="Remember me"
 									/>
 								</div>
 								<div className={styles.Login_Container_Paper_Grid}>
