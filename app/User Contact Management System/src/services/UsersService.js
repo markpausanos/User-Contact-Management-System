@@ -13,9 +13,11 @@ const UsersService = {
 		axios.post(REFRESH_TOKEN_URL, userTokenRequest, { withCredentials: true }),
 	get: () => axios.get(BASE_URL, { withCredentials: true }),
 	updatePassword: (userUpdatePassword) =>
-		axios.put(`${BASE_URL}`, userUpdatePassword),
+		axios.put(`${BASE_URL}`, userUpdatePassword, { withCredentials: true }),
 	updateDetails: (userUpdateDetails) =>
-		axios.put(`${BASE_URL}/Details`, userUpdateDetails),
+		axios.put(`${BASE_URL}/Details`, userUpdateDetails, {
+			withCredentials: true,
+		}),
 };
 
 export default UsersService;
