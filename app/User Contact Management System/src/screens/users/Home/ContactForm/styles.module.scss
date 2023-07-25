@@ -1,0 +1,21 @@
+@use "../../../../styles/" as *;
+
+.ContactForm {
+	&_Form {
+		display: flex !important;
+		flex-direction: column;
+
+		&_Textfield {
+			display: flex;
+			justify-content: space-between;
+			min-width: calc(100% / 3) !important;
+		}
+
+		&_Buttons {
+			padding-top: 1vh;
+			display: flex;
+			justify-content: flex-end;
+			gap: 2vw;
+		}
+	}
+}
