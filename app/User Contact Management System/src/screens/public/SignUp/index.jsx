@@ -100,9 +100,7 @@ const SignUp = () => {
 
 								const { data: user } = await UsersService.get();
 
-								userContext.loginUpdate({
-									user: user,
-								});
+								userContext.loginUpdate(user);
 
 								setErrors({
 									overall: registerResponse.error,
