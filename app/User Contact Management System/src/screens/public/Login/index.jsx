@@ -161,7 +161,7 @@ const Login = () => {
 							margin={"20px 0px 10px 0px"}
 							onClick={() => navigate("/forgot-password")}
 						>
-							Forgot your password?
+							{/* Forgot your password? */}
 						</Typography>
 					</div>
 					<hr style={{ width: "50%" }} />
