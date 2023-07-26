@@ -29,10 +29,37 @@ namespace User_Contact_Management_System.Controllers
             _jwtConfig = jwtConfig;
         }
 
+        /// <summary>
+        /// Creates a new User
+        /// </summary>
+        /// <param name="user">User to be created</param>
+        /// <returns>Returns an AuthResult</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/Users/Register
+        ///     {
+        ///         {
+        ///             "firstName": "string",
+        ///             "lastName": "string",
+        ///             "email": "user@example.com",
+        ///             "username": "string",
+        ///             "password": "string",
+        ///             "confirmPassword": "string"
+        ///         }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="200">Successfully created User</response>
+        /// <response code="400">User credentials invalid or already exist</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost("Register")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] UserCreateDto user)
         {
             try
@@ -56,10 +83,33 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        /// <summary>
+        /// Generate a JWT Token
+        /// </summary>
+        /// <param name="user">User to be logged in</param>
+        /// <returns>Returns an AuthResult</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/Users/Login
+        ///     {
+        ///         {
+        ///             "username": "string",
+        ///             "password": "string",
+        ///         }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="200">Successfully generated AuthResult</response>
+        /// <response code="400">User credentials invalid</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost("Login")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] UserLoginDto user)
         {
             try
@@ -83,6 +133,24 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        /// <summary>
+        /// Refreshes the JWT Token
+        /// </summary>
+        /// <param name="tokenRequest">Refresh token of the user</param>
+        /// <returns>Returns an AuthResult</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/Users/Tokens/Refresh
+        ///     {
+        ///         "token": "string",
+        ///         "refreshToken": "string"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="200">Successfully refreshed AuthResult</response>
+        /// <response code="400">Invalid token</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost("Tokens/Refresh")]
         [Consumes("application/json")]
         [Produces("application/json")]
@@ -109,6 +177,13 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves the current logged in User
+        /// </summary>
+        /// <returns>Returns user details</returns>
+        /// <response code="200">Successfully fetched user data</response>
+        /// <response code="400">Invalid request</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
         [Produces("application/json")]
         public async Task<IActionResult> GetCurrentUser()
@@ -132,10 +207,34 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates the details of a User
+        /// </summary>
+        /// <param name="user">Details of the user to be updated</param>
+        /// <returns>Returns status of the update operation</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/Users/Details
+        ///     {
+        ///         {
+        ///             "firstName": "string",
+        ///             "lastName": "string",
+        ///             "email": "user@example.com",
+        ///         }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="200">Successfully updated User</response>
+        /// <response code="400">Invalid user or parameters</response>
+        /// <response code="500">Internal server error</response>
         [HttpPut("Details")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [Authorize]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateUser([FromBody] UserUpdateDetailsDto user)
         {
             try
@@ -159,10 +258,34 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates the password of a User
+        /// </summary>
+        /// <param name="user">Details of the user password to be updated</param>
+        /// <returns>Returns status of the update operation</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/Users
+        ///     {
+        ///         {
+        ///             "oldPassword": "string",
+        ///             "newPassword": "string",
+        ///             "confirmPassword": "string"
+        ///         }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="200">Successfully updated User password</response>
+        /// <response code="400">Invalid user or parameters</response>
+        /// <response code="500">Internal server error</response>
         [HttpPut]
         [Consumes("application/json")]
         [Produces("application/json")]
         [Authorize]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdatePassword([FromBody] UserUpdatePasswordDto user)
         {
             try
@@ -185,6 +308,13 @@ namespace User_Contact_Management_System.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        /// <summary>
+        /// Returns a BadRequest with an AuthResult containing an error message.
+        /// </summary>
+        /// <param name="errorMessage">The error message to return in the AuthResult</param>
+        /// <returns>Returns a BadRequest with an AuthResult containing an error message</returns>
+
         private IActionResult GetBadRequest(string errorMessage)
         {
             return BadRequest(new AuthResult
@@ -195,6 +325,11 @@ namespace User_Contact_Management_System.Controllers
             });
         }
 
+        /// <summary>
+        /// Sets the Access and Refresh tokens as cookies on the client.
+        /// </summary>
+        /// <param name="token">The JWT token.</param>
+        /// <param name="refreshToken">The refresh token.</param>
         private void SetTokens(string token, string refreshToken)
         {
             var RefreshTokenCookieOptions = new CookieOptions()
