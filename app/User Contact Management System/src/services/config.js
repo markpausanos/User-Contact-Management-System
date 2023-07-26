@@ -1,10 +1,6 @@
 import { isLocal } from "../utils/destinations";
 
-let apiUrl = "https://trailblazers-starrail.azurewebsites.net";
-
-if (isLocal) {
-	apiUrl = "https://localhost:7294/api";
-}
+let apiUrl = "https://ucms-api.azurewebsites.net/api";
 
 const config = {
 	API_URL: apiUrl,
