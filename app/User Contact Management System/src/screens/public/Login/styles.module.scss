@@ -1,0 +1,99 @@
+@use "../../../styles/" as *;
+
+.Login {
+	display: flex;
+	flex-direction: column;
+
+	&_Container {
+		@include flex-center;
+		@media screen and (max-width: 620px) {
+			padding-top: 2vh;
+			width: 100vw !important;
+		}
+
+		@media screen and (min-width: 620px) {
+			padding-top: 2vh;
+			width: 50vw !important;
+			margin: auto;
+		}
+
+		min-height: 80vh !important;
+
+		margin: 0 auto;
+		height: fit-content;
+		position: relative;
+		padding-bottom: 5vh;
+		text-align: center;
+
+		&_Paper {
+			display: flex;
+			flex-direction: column;
+			border-radius: 10px !important;
+			height: 100%;
+			width: 100%;
+
+			&_Grid {
+				padding-top: 2vh;
+				display: grid;
+				align-items: center;
+				justify-content: center;
+				justify-items: center;
+			}
+
+			&_Avatar {
+				background-color: $cyan-400 !important;
+				display: flex !important;
+				width: 10vh !important;
+				height: 10vh !important;
+			}
+
+			&_Textfield {
+				font-weight: bold !important;
+				font-family: DIN;
+				padding-left: 30vw;
+				padding-right: 2vw;
+
+				@media screen and (max-width: 620px) {
+					min-width: 75vw !important;
+					max-width: 75vw !important;
+				}
+
+				@media screen and (min-width: 620px) {
+					min-width: 25vw !important;
+					max-width: 25vw !important;
+				}
+			}
+
+			&_Button {
+				min-width: 20vw !important;
+				background-color: $cyan-400 !important;
+				height: 7vh;
+				border-radius: 15px !important;
+				font-size: 3vh !important;
+
+				@media screen and (max-width: 620px) {
+					min-width: 50vw !important;
+				}
+
+				@media screen and (min-width: 620px) {
+					min-width: 25vw !important;
+				}
+			}
+
+			&_Typography {
+				cursor: pointer;
+				font-weight: 500 !important;
+				color: $cyan-400 !important;
+			}
+
+			&_Typography:hover {
+				text-decoration: underline;
+			}
+
+			&_Form {
+				display: flex;
+				flex-direction: column;
+			}
+		}
+	}
+}

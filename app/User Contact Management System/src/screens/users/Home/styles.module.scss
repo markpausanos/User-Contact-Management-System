@@ -1,0 +1,92 @@
+@use "../../../styles/" as *;
+
+.Home {
+	display: flex;
+	width: 100vw;
+	margin-top: 15vh;
+	padding: 0vh 5vw 2vh 5vw;
+	justify-content: center;
+
+	&_Paper {
+		@media screen and (max-width: 620px) {
+			min-width: none;
+		}
+
+		@media screen and (min-width: 620px) {
+			min-width: 100%;
+		}
+	}
+	&_TableTitle {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 2vh 1vw 2vh 1vw;
+
+		&_Header {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			padding: 2vh 2vw 2vh 2vw;
+			background-color: $turqoise-400;
+		}
+
+		&_Title {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 1.5vw;
+			height: 100%;
+			color: $cyan-400 !important;
+			font-weight: bold !important;
+
+			&_Icon {
+				display: flex !important;
+				padding: 0;
+				width: 5vw !important;
+				height: 5vh !important;
+				box-shadow: $shadow-normal;
+				justify-content: center;
+				align-items: center;
+				border-radius: 5px;
+				background-color: $base !important;
+
+				@media screen and (max-width: 620px) {
+					height: 5vh !important;
+				}
+
+				@media screen and (min-width: 620px) {
+					height: 10vh !important;
+				}
+
+				&_IconContact {
+					height: 100% !important;
+				}
+			}
+		}
+
+		&_TableCell {
+			text-align: center !important;
+		}
+	}
+
+	&_TableToolbar {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: 3vh 2vw 2vh 2vw;
+		width: 100% !important;
+
+		&_Searchbar {
+			width: 45% !important;
+		}
+
+		&_Addbutton {
+			align-self: flex-end !important;
+			background-color: $turqoise-400 !important;
+			color: $cyan-400 !important;
+		}
+	}
+}

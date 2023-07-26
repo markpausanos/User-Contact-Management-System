@@ -22,8 +22,37 @@ namespace User_Contact_Management_System.Controllers
             _userUtils = userUtils;
         }
 
+        /// <summary>
+        /// Creates a new Contact for a specific User
+        /// </summary>
+        /// <param name="contact">Contact to be created</param>
+        /// <returns>Returns the created Contact</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/Contacts
+        ///     {
+        ///         "firstName": "string",
+        ///         "lastName": "string",
+        ///         "contatNumber": "string",
+        ///         "emailAddress": "contact@example.com",
+        ///         "deliveryAddress": "string",
+        ///         "billingAddress": "string"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="201">Successfully created Contact</response>
+        /// <response code="400">Invalid request or parameters</response>
+        /// <response code="401">Unauthorized request</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost]
-        public async Task<IActionResult> CreateContact(ContactCreateDto contact)
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(ContactReturnDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateContact([FromBody] ContactCreateDto contact)
         {
             try
             {
@@ -47,8 +76,20 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
-            
+
+        // <summary>
+        /// Retrieves all Contacts for a specific User
+        /// </summary>
+        /// <returns>Returns all Contacts for a User</returns>
+        /// <response code="200">Successfully fetched all Contacts</response>
+        /// <response code="400">Invalid request</response>
+        /// <response code="401">Unauthorized request</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ContactReturnDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllContacts()
         {
             try
@@ -73,7 +114,20 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves a Contact by its ID for a specific User
+        /// </summary>
+        /// <param name="id">ID of the Contact to be retrieved</param>
+        /// <returns>Returns the Contact</returns>
+        /// <response code="200">Successfully fetched Contact</response>
+        /// <response code="400">Invalid request or parameters</response>
+        /// <response code="401">Unauthorized request</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ContactReturnDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetContact([FromRoute] string id)
         {
             try
@@ -98,8 +152,38 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Updates a Contact by its ID for a specific User
+        /// </summary>
+        /// <param name="id">ID of the Contact to be updated</param>
+        /// <param name="contact">New details of the Contact</param>
+        /// <returns>Returns the updated Contact</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/Contacts/{id}
+        ///     {
+        ///         "firstName": "string",
+        ///         "lastName": "string",
+        ///         "contatNumber": "string",
+        ///         "emailAddress": "contact@example.com",
+        ///         "deliveryAddress": "string",
+        ///         "billingAddress": "string"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="200">Successfully updated Contact</response>
+        /// <response code="400">Invalid request or parameters</response>
+        /// <response code="401">Unauthorized request</response>
+        /// <response code="500">Internal server error</response>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateContact([FromRoute] string id, ContactUpdateDto contact)
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateContact([FromRoute] string id, [FromBody] ContactUpdateDto contact)
         {
             try
             {
@@ -123,7 +207,20 @@ namespace User_Contact_Management_System.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a Contact by its ID for a specific User
+        /// </summary>
+        /// <param name="id">ID of the Contact to be deleted</param>
+        /// <returns>Returns status of the delete operation</returns>
+        /// <response code="200">Successfully deleted Contact</response>
+        /// <response code="400">Invalid request or parameters</response>
+        /// <response code="401">Unauthorized request</response>
+        /// <response code="500">Internal server error</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteContact([FromRoute] string id)
         {
             try

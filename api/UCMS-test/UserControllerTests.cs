@@ -1,5 +1,4 @@
-﻿using Xunit;
-using Moq;
+﻿using Moq;
 using Microsoft.AspNetCore.Mvc;
 using User_Contact_Management_System.Controllers;
 using User_Contact_Management_System.Services.Users;

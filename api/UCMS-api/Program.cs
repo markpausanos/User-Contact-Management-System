@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using FoolProof.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -21,15 +23,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<APIDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("APIDbContext")));
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-ConfigureServices(builder.Services, builder.Configuration);
+
+await ConfigureServices(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,7 +40,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+ 
 
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -46,10 +50,22 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.Run();
 
-void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+async Task ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
+    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri") ?? builder.Configuration.GetSection("KeyVault:URL").Value).ToString();
+    
+    var secretClient = new SecretClient(new Uri(keyVaultEndpoint!), new DefaultAzureCredential());
+
+    KeyVaultSecret jwtSecret = await secretClient.GetSecretAsync("jwt-secret");
+    KeyVaultSecret dbSecret = await secretClient.GetSecretAsync("azure-sqldb-connection");
+
+    string? dbSecretValue = dbSecret.Value ?? configuration.GetConnectionString("APIDbContext");
+    services.AddDbContext<APIDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString(dbSecretValue)));
+
     services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<APIDbContext>()
         .AddDefaultTokenProviders();
@@ -90,6 +106,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     services.Configure<JwtConfig>(configuration.GetSection("JwtConfig"));
     var jwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfig>();
+    jwtConfig.Secret = jwtSecret.Value ?? jwtConfig.Secret;
     var tokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -104,6 +121,18 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     services.AddSingleton(jwtConfig);
     services.AddSingleton(tokenValidationParameters);
+
+    services.AddCors(options => options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:5174")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+        builder.WithOrigins("http://localhost:5173")
+       .AllowAnyMethod()
+       .AllowAnyHeader()
+       .AllowCredentials();
+    }));
 
     services.AddAuthentication(options =>
     {

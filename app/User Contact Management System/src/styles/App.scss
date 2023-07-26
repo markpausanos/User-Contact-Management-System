@@ -1,0 +1,18 @@
+@import "./font";
+@import "./variables.scss";
+
+:root {
+	display: flex;
+	font-size: 14px;
+	background-color: $base;
+}
+
+body {
+	font-family: DIN !important;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+p {
+	margin: 0;
+}
