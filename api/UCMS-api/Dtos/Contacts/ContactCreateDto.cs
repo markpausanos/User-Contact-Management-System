@@ -12,7 +12,6 @@ namespace User_Contact_Management_System.Dtos.Contacts
         [RequiredIfEmpty(nameof(FirstName))]
         public string? LastName { get; set; }
 
-        [Phone]
         public string? ContactNumber { get; set; }
 
         [EmailAddress]
