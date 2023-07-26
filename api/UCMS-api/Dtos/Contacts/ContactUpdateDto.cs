@@ -7,8 +7,6 @@ namespace User_Contact_Management_System.Dtos.Contacts
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
-
-        [Phone]
         public string? ContactNumber { get; set; }
 
         [EmailAddress]
