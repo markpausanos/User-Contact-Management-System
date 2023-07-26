@@ -1,33 +1,22 @@
-# Use the official .NET 6 SDK image as the build environment.
+#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-
-# Set the working directory inside the container.
-WORKDIR /app
-
-# Copy the project file(s) to the container.
-COPY UCMS-api.csproj .
-
-# Restore the NuGet packages.
-RUN dotnet restore
-
-# Copy the entire project files to the container.
-# This step can be optimized using a .dockerignore file to exclude unnecessary files.
+WORKDIR /src
+COPY ["UCMS-api.csproj", "."]
+RUN dotnet restore "./UCMS-api.csproj"
 COPY . .
+WORKDIR "/src/."
+RUN dotnet build "UCMS-api.csproj" -c Release -o /app/build
 
-# Build the application.
-RUN dotnet build -c Release --no-restore
+FROM build AS publish
+RUN dotnet publish "UCMS-api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Publish the application as a self-contained app.
-RUN dotnet publish -c Release -o out --no-restore -r linux-x64
-
-# Create a runtime image using the .NET 6 runtime image.
-FROM mcr.microsoft.com/dotnet/runtime:6.0
-
-# Set the working directory inside the container.
+FROM base AS final
 WORKDIR /app
-
-# Copy the published files from the build image to the runtime image.
-COPY --from=build /app/out .
-
-# Set the entry point for the application.
-ENTRYPOINT ["./UCMS-api"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "UCMS-api.dll"]
