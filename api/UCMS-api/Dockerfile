@@ -1,13 +1,13 @@
-# Use the official .NET 6 SDK image as the base image.
-# You can choose a specific version tag if needed.
+# Use the official .NET 6 SDK image as the build environment.
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 # Set the working directory inside the container.
 WORKDIR /app
 
+# Copy the project file(s) to the container.
 COPY UCMS-api.csproj .
 
-# Restore the dependencies.
+# Restore the NuGet packages.
 RUN dotnet restore
 
 # Copy the entire project files to the container.
@@ -17,8 +17,8 @@ COPY . .
 # Build the application.
 RUN dotnet build -c Release --no-restore
 
-# Publish the application.
-RUN dotnet publish -c Release -o out --no-restore
+# Publish the application as a self-contained app.
+RUN dotnet publish -c Release -o out --no-restore -r linux-x64
 
 # Create a runtime image using the .NET 6 runtime image.
 FROM mcr.microsoft.com/dotnet/runtime:6.0
@@ -30,4 +30,4 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Set the entry point for the application.
-ENTRYPOINT ["dotnet", "UCMS-api.dll"]
+ENTRYPOINT ["./UCMS-api"]
