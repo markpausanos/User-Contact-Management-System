@@ -55,7 +55,7 @@ app.Run();
 
 async Task ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri") ?? builder.Configuration.GetSection("KeyVault:URL").Value).ToString();
+    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri") ?? builder.Configuration.GetSection("KeyVault:URL").Value!).ToString();
     
     var secretClient = new SecretClient(new Uri(keyVaultEndpoint!), new DefaultAzureCredential());
 
@@ -64,7 +64,7 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
 
     string? dbSecretValue = dbSecret.Value ?? configuration.GetConnectionString("APIDbContext");
     services.AddDbContext<APIDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(dbSecretValue)));
+    options.UseSqlServer(builder.Configuration.GetConnectionString(dbSecretValue!)));
 
     services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<APIDbContext>()
