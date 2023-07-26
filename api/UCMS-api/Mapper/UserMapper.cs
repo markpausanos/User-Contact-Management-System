@@ -9,6 +9,7 @@ namespace User_Contact_Management_System.Mapper
         public UserMapper()
         {
             CreateMap<UserCreateDto, ApplicationUser>();
+            CreateMap<ApplicationUser, UserReturnDto>();
         }
     }
 }

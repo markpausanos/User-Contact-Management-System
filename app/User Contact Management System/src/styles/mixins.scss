@@ -1,0 +1,137 @@
+@import "./variables";
+
+@mixin flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@mixin flex-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+@mixin flex-start {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+@mixin flex-end {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+@mixin flex-evenly {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+@mixin breakpoint($class) {
+	@if $class==xs {
+		@media (max-width: 575px) {
+			@content;
+		}
+	} @else if $class==sm {
+		@media (max-width: 767px) {
+			@content;
+		}
+	} @else if $class==md {
+		@media (max-width: 991px) {
+			@content;
+		}
+	} @else if $class==lg {
+		@media (max-width: 1200px) {
+			@content;
+		}
+	} @else if $class==xl {
+		@media (max-width: 1400px) {
+			@content;
+		}
+	} @else {
+		@warn 'Breakpoint mixin supports: xs, sm, md, lg, xl';
+	}
+}
+
+// Animations
+@mixin ease($duration: 0.5s) {
+	transition: $duration ease;
+}
+
+// Text Styles
+@mixin heading($size, $height) {
+	font-family: DIN;
+	font-size: $size;
+	line-height: $height;
+	font-weight: 700;
+	font-style: normal;
+	margin: 0;
+}
+
+@mixin body($size, $height) {
+	font-family: DIN;
+	font-size: $size;
+	line-height: $height;
+	font-weight: 400;
+	font-style: normal;
+	margin: 0;
+}
+
+@mixin strong($size, $height) {
+	font-family: DIN;
+	font-size: $size;
+	line-height: $height;
+	font-weight: 500;
+	font-style: normal;
+	margin: 0;
+}
+
+// Buttons
+.buttonBase {
+	@include ease(0.3s);
+	cursor: pointer;
+	text-transform: capitalize;
+	outline: none;
+	text-decoration: none;
+	text-align: center;
+}
+
+@mixin primary($bg, $bg-hover, $bg-pressed, $color, $box-shadow) {
+	@extend .buttonBase;
+	color: $color;
+	background-color: $bg;
+	border-radius: 100px;
+	padding: 10px 24px;
+	border: none;
+	box-shadow: $box-shadow;
+
+	&:hover:not(:disabled) {
+		background-color: $bg-hover;
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+}
+
+@mixin secondary($color) {
+	@extend .buttonBase;
+	color: $neutral-0;
+	background-color: transparent;
+	border-radius: 100px;
+	padding: 10px 24px;
+	border: 1px solid $color;
+
+	&:hover:not(:disabled) {
+		background-color: transparentize($color, 0.9);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+}

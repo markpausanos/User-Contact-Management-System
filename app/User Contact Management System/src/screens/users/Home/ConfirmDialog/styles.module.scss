@@ -1,0 +1,13 @@
+@use "../../../../styles/" as *;
+
+.ConfirmDialog {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+	&_Text {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
