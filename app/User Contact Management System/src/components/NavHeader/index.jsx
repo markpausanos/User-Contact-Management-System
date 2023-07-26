@@ -55,7 +55,11 @@ const NavHeader = () => {
 							sx={{ padding: 0 }}
 							onClick={() => setOpenAccountPopup(true)}
 						>
-							<Typography margin="dense" variant="h6">
+							<Typography
+								margin="dense"
+								variant="h6"
+								className={styles.NavMenu_Button}
+							>
 								Account
 							</Typography>
 						</Button>
@@ -68,7 +72,11 @@ const NavHeader = () => {
 							sx={{ padding: 0 }}
 							onClick={() => setOpenPasswordPopup(true)}
 						>
-							<Typography margin="dense" variant="h6">
+							<Typography
+								margin="dense"
+								variant="h6"
+								className={styles.NavMenu_Button}
+							>
 								Password
 							</Typography>
 						</Button>
@@ -81,7 +89,11 @@ const NavHeader = () => {
 							sx={{ padding: 0 }}
 							onClick={() => userContext.loginRestart()}
 						>
-							<Typography margin="dense" variant="h6">
+							<Typography
+								margin="dense"
+								variant="h6"
+								className={styles.NavMenu_Button}
+							>
 								Logout
 							</Typography>
 						</Button>

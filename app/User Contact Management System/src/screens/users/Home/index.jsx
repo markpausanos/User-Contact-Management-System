@@ -131,11 +131,16 @@ const Home = () => {
 										className={styles.Home_TableTitle_Title_Icon_IconContact}
 										sx={{
 											display: "flex",
-											fontSize: "30px",
+											fontSize: "1.5vw",
 										}}
 									/>
 								</Icon>
-								<Typography variant="h4">Contacts List</Typography>
+								<Typography
+									variant="h4"
+									className={styles.Home_TableTitle_Title_Text}
+								>
+									Contacts List
+								</Typography>
 							</div>
 						</div>
 						<div>
@@ -170,74 +175,86 @@ const Home = () => {
 								</Button>
 							</Toolbar>
 						</div>
-						<TblContainer>
-							<TblHead />
-							{isLoading && (
-								<TableRow>
-									<TableCell className={styles.Home_TableTitle_TableCell}>
-										<PulseLoader />
-									</TableCell>
-									<TableCell className={styles.Home_TableTitle_TableCell}>
-										<PulseLoader />
-									</TableCell>
-									<TableCell className={styles.Home_TableTitle_TableCell}>
-										<PulseLoader />
-									</TableCell>
-									<TableCell className={styles.Home_TableTitle_TableCell}>
-										<PulseLoader />
-									</TableCell>
-									<TableCell className={styles.Home_TableTitle_TableCell}>
-										<PulseLoader />
-									</TableCell>
-									<TableCell className={styles.Home_TableTitle_TableCell}>
-										<PulseLoader />
-									</TableCell>
-									<TableCell className={styles.Home_TableTitle_TableCell}>
-										<PulseLoader />
-									</TableCell>
-								</TableRow>
-							)}
-							{!isLoading && (
-								<TableBody>
-									{contactsAfterPagingAndSorting().map((item) => (
-										<TableRow key={item.id}>
-											<TableCell className={styles.Home_TableTitle_TableCell}>
-												{item.emailAddress}
-											</TableCell>
-											<TableCell>{item.firstName}</TableCell>
-											<TableCell>{item.lastName}</TableCell>
-											<TableCell>{item.contactNumber}</TableCell>
-											<TableCell>{item.billingAddress}</TableCell>
-											<TableCell>{item.deliveryAddress}</TableCell>
-											<TableCell>
-												<div style={{ display: "flex", gap: "1vw" }}>
-													<Button
-														color="primary"
-														variant="contained"
-														onClick={() => {
-															setSelectedContact(item);
-															setOpenPopup(true);
-														}}
-													>
-														<EditOutlined />
-													</Button>
-													<Button
-														color="secondary"
-														variant="contained"
-														onClick={() => {
-															setSelectedContact(item);
-															setOpenPopupDelete(true);
-														}}
-													>
-														<CloseOutlined />
-													</Button>
-												</div>
-											</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							)}
-						</TblContainer>
+						<div className={styles.Home_TableTitle_TableContainer}>
+							<TblContainer>
+								<TblHead />
+								{isLoading && (
+									<TableRow>
+										<TableCell className={styles.Home_TableTitle_TableCell}>
+											<PulseLoader />
+										</TableCell>
+										<TableCell className={styles.Home_TableTitle_TableCell}>
+											<PulseLoader />
+										</TableCell>
+										<TableCell className={styles.Home_TableTitle_TableCell}>
+											<PulseLoader />
+										</TableCell>
+										<TableCell className={styles.Home_TableTitle_TableCell}>
+											<PulseLoader />
+										</TableCell>
+										<TableCell className={styles.Home_TableTitle_TableCell}>
+											<PulseLoader />
+										</TableCell>
+										<TableCell className={styles.Home_TableTitle_TableCell}>
+											<PulseLoader />
+										</TableCell>
+										<TableCell className={styles.Home_TableTitle_TableCell}>
+											<PulseLoader />
+										</TableCell>
+									</TableRow>
+								)}
+								{!isLoading && (
+									<TableBody>
+										{contactsAfterPagingAndSorting().map((item) => (
+											<TableRow key={item.id}>
+												<TableCell className={styles.Home_TableTitle_TableCell}>
+													{item.emailAddress}
+												</TableCell>
+												<TableCell className={styles.Home_TableTitle_TableCell}>
+													{item.firstName}
+												</TableCell>
+												<TableCell className={styles.Home_TableTitle_TableCell}>
+													{item.lastName}
+												</TableCell>
+												<TableCell className={styles.Home_TableTitle_TableCell}>
+													{item.contactNumber}
+												</TableCell>
+												<TableCell className={styles.Home_TableTitle_TableCell}>
+													{item.billingAddress}
+												</TableCell>
+												<TableCell className={styles.Home_TableTitle_TableCell}>
+													{item.deliveryAddress}
+												</TableCell>
+												<TableCell className={styles.Home_TableTitle_TableCell}>
+													<div style={{ display: "flex", gap: "1vw" }}>
+														<Button
+															color="primary"
+															variant="contained"
+															onClick={() => {
+																setSelectedContact(item);
+																setOpenPopup(true);
+															}}
+														>
+															<EditOutlined />
+														</Button>
+														<Button
+															color="secondary"
+															variant="contained"
+															onClick={() => {
+																setSelectedContact(item);
+																setOpenPopupDelete(true);
+															}}
+														>
+															<CloseOutlined />
+														</Button>
+													</div>
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								)}
+							</TblContainer>
+						</div>
 						<TblPagination />
 					</Paper>
 					<Popup

@@ -6,19 +6,28 @@
 
 	&_Container {
 		@include flex-center;
-		@media screen and (max-width: 620px) {
-			padding-top: 2vh;
+		@media only screen and (max-width: 575px) {
 			width: 100vw !important;
 		}
-
-		@media screen and (min-width: 620px) {
-			padding-top: 2vh;
+		@media only screen and (min-width: 575px) {
+			width: 90vw !important;
+		}
+		@media only screen and (min-width: 767px) {
+			width: 80vw !important;
+		}
+		@media only screen and (min-width: 991px) {
+			width: 70vw !important;
+		}
+		@media only screen and (min-width: 1200px) {
+			width: 60vw !important;
+		}
+		@media only screen and (min-width: 1400px) {
 			width: 50vw !important;
-			margin: auto;
 		}
 
 		min-height: 80vh !important;
-
+		padding-top: 2vh;
+		margin: 0 auto;
 		height: fit-content;
 		position: relative;
 		padding-bottom: 5vh;
@@ -51,14 +60,23 @@
 				padding-left: 30vw;
 				padding-right: 2vw;
 
-				@media screen and (max-width: 620px) {
-					min-width: 75vw !important;
-					max-width: 75vw !important;
+				@media only screen and (max-width: 575px) {
+					width: 70vw !important;
 				}
-
-				@media screen and (min-width: 620px) {
-					min-width: 25vw !important;
-					max-width: 25vw !important;
+				@media only screen and (min-width: 575px) {
+					width: 50vw !important;
+				}
+				@media only screen and (min-width: 767px) {
+					width: 30vw !important;
+				}
+				@media only screen and (min-width: 991px) {
+					width: 30vw !important;
+				}
+				@media only screen and (min-width: 1200px) {
+					width: 25vw !important;
+				}
+				@media only screen and (min-width: 1400px) {
+					width: 25vw !important;
 				}
 			}
 
@@ -69,12 +87,23 @@
 				border-radius: 15px !important;
 				font-size: 3vh !important;
 
-				@media screen and (max-width: 620px) {
-					min-width: 50vw !important;
+				@media only screen and (max-width: 575px) {
+					width: 70vw !important;
 				}
-
-				@media screen and (min-width: 620px) {
-					min-width: 25vw !important;
+				@media only screen and (min-width: 575px) {
+					width: 50vw !important;
+				}
+				@media only screen and (min-width: 767px) {
+					width: 30vw !important;
+				}
+				@media only screen and (min-width: 991px) {
+					width: 30vw !important;
+				}
+				@media only screen and (min-width: 1200px) {
+					width: 25vw !important;
+				}
+				@media only screen and (min-width: 1400px) {
+					width: 25vw !important;
 				}
 			}
 

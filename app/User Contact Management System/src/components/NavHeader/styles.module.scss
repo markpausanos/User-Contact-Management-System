@@ -1,7 +1,7 @@
 @use "../../styles/" as *;
 
 .NavHeader {
-	width: 100vw;
+	width: 200vw !important;
 	display: flex;
 	align-items: center;
 	position: fixed;
@@ -26,8 +26,8 @@
 	top: 0;
 	margin-top: 10vh;
 	background-color: $turqoise-200;
-	width: 30vw !important;
-	height: 100vh;
+
+	height: 200vh;
 	display: flex;
 	justify-content: center;
 	position: fixed;
@@ -43,17 +43,9 @@
 		justify-content: center;
 		position: fixed;
 		left: 0;
-		height: 100vh;
+		height: 200vh;
 		transition: 350ms;
 		z-index: 997;
-
-		@media screen and (max-width: 620px) {
-			width: 30vw;
-		}
-
-		@media screen and (min-width: 620px) {
-			width: 15vw;
-		}
 	}
 
 	&_Item {
@@ -62,6 +54,25 @@
 		align-items: flex-start;
 		width: 100%;
 		padding-left: 0px;
+
+		@media only screen and (max-width: 575px) {
+			width: 25vw !important;
+		}
+		@media only screen and (min-width: 575px) {
+			width: 25vw !important;
+		}
+		@media only screen and (min-width: 767px) {
+			width: 20vw !important;
+		}
+		@media only screen and (min-width: 991px) {
+			width: 20vw !important;
+		}
+		@media only screen and (min-width: 1200px) {
+			width: 15vw !important;
+		}
+		@media only screen and (min-width: 1400px) {
+			width: 15vw !important;
+		}
 	}
 
 	&_Text {
@@ -82,14 +93,6 @@
 		justify-content: flex-start;
 		padding: 0 3vw;
 		border-radius: 4px;
-
-		@media screen and (max-width: 620px) {
-			font-size: 3vw;
-		}
-
-		@media screen and (min-width: 620px) {
-			font-size: 3vh;
-		}
 	}
 
 	&_Text a:hover {
@@ -104,5 +107,27 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
+		padding-left: 2vw;
+	}
+
+	&_Button {
+		@media only screen and (max-width: 575px) {
+			font-size: 3vw !important;
+		}
+		@media only screen and (min-width: 575px) {
+			font-size: 3vw !important;
+		}
+		@media only screen and (min-width: 767px) {
+			font-size: 2vw !important;
+		}
+		@media only screen and (min-width: 991px) {
+			font-size: 2vw !important;
+		}
+		@media only screen and (min-width: 1200px) {
+			font-size: 1.5vw !important;
+		}
+		@media only screen and (min-width: 1400px) {
+			font-size: 1.5vw !important;
+		}
 	}
 }

@@ -6,16 +6,20 @@
 	margin-top: 15vh;
 	padding: 0vh 5vw 2vh 5vw;
 	justify-content: center;
+	align-items: center;
 
 	&_Paper {
 		@media screen and (max-width: 620px) {
-			min-width: none;
+			min-width: 90vw;
+			max-width: 100vw;
 		}
 
 		@media screen and (min-width: 620px) {
-			min-width: 100%;
+			min-width: 90vw;
+			max-width: 100vw;
 		}
 	}
+
 	&_TableTitle {
 		display: flex;
 		flex-direction: row;
@@ -30,6 +34,7 @@
 			justify-content: space-between;
 			padding: 2vh 2vw 2vh 2vw;
 			background-color: $turqoise-400;
+			max-width: 100vw;
 		}
 
 		&_Title {
@@ -46,28 +51,89 @@
 				padding: 0;
 				width: 5vw !important;
 				height: 5vh !important;
-				box-shadow: $shadow-normal;
+
 				justify-content: center;
 				align-items: center;
 				border-radius: 5px;
-				background-color: $base !important;
 
-				@media screen and (max-width: 620px) {
-					height: 5vh !important;
+				@media only screen and (max-width: 575px) {
+					width: 5vw !important;
 				}
 
-				@media screen and (min-width: 620px) {
-					height: 10vh !important;
+				/* For screens with a minimum width of 575px */
+				@media only screen and (min-width: 575px) {
+					height: 3vw !important;
+				}
+
+				/* For screens with a minimum width of 767px */
+				@media only screen and (min-width: 767px) {
+					height: 3vw !important;
+				}
+
+				/* For screens with a minimum width of 991px */
+				@media only screen and (min-width: 991px) {
+					height: 2.5vw !important;
+				}
+
+				/* For screens with a minimum width of 1200px */
+				@media only screen and (min-width: 1200px) {
+					height: 2vw !important;
+				}
+
+				/* For screens with a minimum width of 1400px */
+				@media only screen and (min-width: 1400px) {
+					height: 2vw !important;
 				}
 
 				&_IconContact {
 					height: 100% !important;
+					width: 80% !important;
+				}
+			}
+			&_Text {
+				/* For screens with a maximum width of 575px */
+				@media only screen and (max-width: 575px) {
+					font-size: 3vw !important;
+				}
+
+				/* For screens with a minimum width of 575px */
+				@media only screen and (min-width: 575px) {
+					font-size: 2vw !important;
+				}
+
+				/* For screens with a minimum width of 767px */
+				@media only screen and (min-width: 767px) {
+					font-size: 1.7vw !important;
+				}
+
+				/* For screens with a minimum width of 991px */
+				@media only screen and (min-width: 991px) {
+					font-size: 1.5vw !important;
+				}
+
+				/* For screens with a minimum width of 1200px */
+				@media only screen and (min-width: 1200px) {
+					font-size: 1.3vw !important;
+				}
+
+				/* For screens with a minimum width of 1400px */
+				@media only screen and (min-width: 1400px) {
+					font-size: 1vw !important;
 				}
 			}
 		}
 
 		&_TableCell {
 			text-align: center !important;
+			font-size: 1.5vw !important;
+		}
+
+		&_TableContainer {
+			overflow-x: scroll;
+
+			&_Text {
+				font-size: 2vw;
+			}
 		}
 	}
 
@@ -81,12 +147,72 @@
 
 		&_Searchbar {
 			width: 45% !important;
+
+			/* For screens with a maximum width of 575px */
+			@media only screen and (max-width: 575px) {
+				font-size: 3vw !important;
+			}
+
+			/* For screens with a minimum width of 575px */
+			@media only screen and (min-width: 575px) {
+				font-size: 2vw !important;
+			}
+
+			/* For screens with a minimum width of 767px */
+			@media only screen and (min-width: 767px) {
+				font-size: 1.7vw !important;
+			}
+
+			/* For screens with a minimum width of 991px */
+			@media only screen and (min-width: 991px) {
+				font-size: 1.5vw !important;
+			}
+
+			/* For screens with a minimum width of 1200px */
+			@media only screen and (min-width: 1200px) {
+				font-size: 1.3vw !important;
+			}
+
+			/* For screens with a minimum width of 1400px */
+			@media only screen and (min-width: 1400px) {
+				font-size: 1vw !important;
+			}
 		}
 
 		&_Addbutton {
 			align-self: flex-end !important;
 			background-color: $turqoise-400 !important;
 			color: $cyan-400 !important;
+
+			/* For screens with a maximum width of 575px */
+			@media only screen and (max-width: 575px) {
+				font-size: 3vw !important;
+			}
+
+			/* For screens with a minimum width of 575px */
+			@media only screen and (min-width: 575px) {
+				font-size: 2vw !important;
+			}
+
+			/* For screens with a minimum width of 767px */
+			@media only screen and (min-width: 767px) {
+				font-size: 1.7vw !important;
+			}
+
+			/* For screens with a minimum width of 991px */
+			@media only screen and (min-width: 991px) {
+				font-size: 1.5vw !important;
+			}
+
+			/* For screens with a minimum width of 1200px */
+			@media only screen and (min-width: 1200px) {
+				font-size: 1.3vw !important;
+			}
+
+			/* For screens with a minimum width of 1400px */
+			@media only screen and (min-width: 1400px) {
+				font-size: 1vw !important;
+			}
 		}
 	}
 }
