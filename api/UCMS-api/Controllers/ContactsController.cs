@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using User_Contact_Management_System.Dtos.Contacts;
-using User_Contact_Management_System.Models;
 using User_Contact_Management_System.Services.Contacts;
 using User_Contact_Management_System.Utils;
 
