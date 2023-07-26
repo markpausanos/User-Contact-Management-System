@@ -98,6 +98,22 @@ const SignUp = () => {
 									currentFormValues
 								);
 
+								cookies.set("AccessToken", registerResponse, {
+									path: "/",
+									maxAge: 60
+								})
+								
+								const currentTime = new Date();
+
+								// Calculate the expiration date (3 months = 90 days)
+								const expirationTime = new Date(currentTime.getTime() + (90 * 24 * 60 * 60 * 1000));
+
+								// Set the cookie with the calculated expiration date
+								cookies.set("RefreshToken", registerResponse, {
+									path: "/",
+									expires: expirationTime,
+								});
+
 								const { data: user } = await UsersService.get();
 
 								userContext.loginUpdate(user);

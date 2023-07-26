@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { isEmpty } from "lodash";
@@ -34,6 +35,7 @@ const validate = (values) => {
 
 const Login = () => {
 	const userContext = useContext(UserContext);
+	const cookies = new Cookies();
 	const navigate = useNavigate();
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
@@ -69,7 +71,23 @@ const Login = () => {
 							setIsLoggingIn(true);
 
 							try {
-								await UsersService.login(currentFormValues);
+								const { data: loginResponse} = await UsersService.login(currentFormValues);
+								
+								cookies.set("AccessToken", loginResponse, {
+									path: "/",
+									maxAge: 60
+								})
+								
+								const currentTime = new Date();
+
+								// Calculate the expiration date (3 months = 90 days)
+								const expirationTime = new Date(currentTime.getTime() + (90 * 24 * 60 * 60 * 1000));
+
+								// Set the cookie with the calculated expiration date
+								cookies.set("RefreshToken", loginResponse, {
+									path: "/",
+									expires: expirationTime,
+								});
 
 								const { data: user } = await UsersService.get();
 
