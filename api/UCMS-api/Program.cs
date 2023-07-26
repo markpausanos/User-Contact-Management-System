@@ -124,14 +124,10 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
 
     services.AddCors(options => options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:5174")
+        builder.WithOrigins("https://linkup-ucms.azurewebsites.net")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();
-        builder.WithOrigins("http://localhost:5173")
-       .AllowAnyMethod()
-       .AllowAnyHeader()
-       .AllowCredentials();
     }));
 
     services.AddAuthentication(options =>
