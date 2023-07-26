@@ -73,7 +73,7 @@ const Login = () => {
 							try {
 								const { data: loginResponse} = await UsersService.login(currentFormValues);
 								
-								cookies.set("AccessToken", loginResponse, {
+								cookies.set("AccessToken", loginResponse.token, {
 									path: "/",
 									maxAge: 60
 								})
@@ -84,7 +84,7 @@ const Login = () => {
 								const expirationTime = new Date(currentTime.getTime() + (90 * 24 * 60 * 60 * 1000));
 
 								// Set the cookie with the calculated expiration date
-								cookies.set("RefreshToken", loginResponse, {
+								cookies.set("RefreshToken", loginResponse.refreshToken, {
 									path: "/",
 									expires: expirationTime,
 								});

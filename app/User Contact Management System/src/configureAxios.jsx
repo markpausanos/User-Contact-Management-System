@@ -63,6 +63,22 @@ export const configureAxios = () => {
 							response.data.token
 						) {
 							// Retry the failed request with the new token
+							cookies.set("AccessToken", response.data.token, {
+								path: "/",
+								maxAge: 60
+							})
+							
+							const currentTime = new Date();
+
+							// Calculate the expiration date (3 months = 90 days)
+							const expirationTime = new Date(currentTime.getTime() + (90 * 24 * 60 * 60 * 1000));
+
+							// Set the cookie with the calculated expiration date
+							cookies.set("RefreshToken", response.data.refreshToken, {
+								path: "/",
+								expires: expirationTime,
+							});
+
 							error.config.headers.authorization = `Bearer ${response.data.token}`;
 							return axios(error.config);
 						}

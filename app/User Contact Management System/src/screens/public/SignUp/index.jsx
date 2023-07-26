@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { isEmpty } from "lodash";
@@ -57,6 +58,7 @@ const schema = yup.object().shape({
 
 const SignUp = () => {
 	const userContext = useContext(UserContext);
+	const cookies = new Cookies();
 	const navigate = useNavigate();
 	const [isSigningUp, setIsSigningUp] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
@@ -98,7 +100,7 @@ const SignUp = () => {
 									currentFormValues
 								);
 
-								cookies.set("AccessToken", registerResponse, {
+								cookies.set("AccessToken", registerResponse.token, {
 									path: "/",
 									maxAge: 60
 								})
@@ -109,7 +111,7 @@ const SignUp = () => {
 								const expirationTime = new Date(currentTime.getTime() + (90 * 24 * 60 * 60 * 1000));
 
 								// Set the cookie with the calculated expiration date
-								cookies.set("RefreshToken", registerResponse, {
+								cookies.set("RefreshToken", registerResponse.refreshToken, {
 									path: "/",
 									expires: expirationTime,
 								});
