@@ -1,7 +1,7 @@
 @use "../../styles/" as *;
 
 .NavHeader {
-	width: 200vw !important;
+	width: 100vw !important;
 	display: flex;
 	align-items: center;
 	position: fixed;
@@ -111,23 +111,34 @@
 	}
 
 	&_Button {
+		/* For screens with a maximum width of 575px */
 		@media only screen and (max-width: 575px) {
-			font-size: 3vw !important;
+			font-size: 1em !important;
 		}
+
+		/* For screens with a minimum width of 575px */
 		@media only screen and (min-width: 575px) {
-			font-size: 3vw !important;
+			font-size: 1.1em !important;
 		}
+
+		/* For screens with a minimum width of 767px */
 		@media only screen and (min-width: 767px) {
-			font-size: 2vw !important;
+			font-size: 1.2em !important;
 		}
+
+		/* For screens with a minimum width of 991px */
 		@media only screen and (min-width: 991px) {
-			font-size: 2vw !important;
+			font-size: 1.3em !important;
 		}
+
+		/* For screens with a minimum width of 1200px */
 		@media only screen and (min-width: 1200px) {
-			font-size: 1.5vw !important;
+			font-size: 1.4em !important;
 		}
+
+		/* For screens with a minimum width of 1400px */
 		@media only screen and (min-width: 1400px) {
-			font-size: 1.5vw !important;
+			font-size: 1.5em !important;
 		}
 	}
 }

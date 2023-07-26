@@ -9,15 +9,8 @@
 	align-items: center;
 
 	&_Paper {
-		@media screen and (max-width: 620px) {
-			min-width: 90vw;
-			max-width: 100vw;
-		}
-
-		@media screen and (min-width: 620px) {
-			min-width: 90vw;
-			max-width: 100vw;
-		}
+		min-width: 90vw;
+		max-width: 100vw;
 	}
 
 	&_TableTitle {
@@ -57,32 +50,32 @@
 				border-radius: 5px;
 
 				@media only screen and (max-width: 575px) {
-					width: 5vw !important;
+					width: 7.5vw !important;
 				}
 
 				/* For screens with a minimum width of 575px */
 				@media only screen and (min-width: 575px) {
-					height: 3vw !important;
+					width: 7vw !important;
 				}
 
 				/* For screens with a minimum width of 767px */
 				@media only screen and (min-width: 767px) {
-					height: 3vw !important;
+					width: 6.5vw !important;
 				}
 
 				/* For screens with a minimum width of 991px */
 				@media only screen and (min-width: 991px) {
-					height: 2.5vw !important;
+					width: 6vw !important;
 				}
 
 				/* For screens with a minimum width of 1200px */
 				@media only screen and (min-width: 1200px) {
-					height: 2vw !important;
+					width: 5.5vw !important;
 				}
 
 				/* For screens with a minimum width of 1400px */
 				@media only screen and (min-width: 1400px) {
-					height: 2vw !important;
+					width: 7vw !important;
 				}
 
 				&_IconContact {
@@ -93,39 +86,67 @@
 			&_Text {
 				/* For screens with a maximum width of 575px */
 				@media only screen and (max-width: 575px) {
-					font-size: 3vw !important;
+					font-size: 1em !important;
 				}
 
 				/* For screens with a minimum width of 575px */
 				@media only screen and (min-width: 575px) {
-					font-size: 2vw !important;
+					font-size: 1.1em !important;
 				}
 
 				/* For screens with a minimum width of 767px */
 				@media only screen and (min-width: 767px) {
-					font-size: 1.7vw !important;
+					font-size: 1.2em !important;
 				}
 
 				/* For screens with a minimum width of 991px */
 				@media only screen and (min-width: 991px) {
-					font-size: 1.5vw !important;
+					font-size: 1.3em !important;
 				}
 
 				/* For screens with a minimum width of 1200px */
 				@media only screen and (min-width: 1200px) {
-					font-size: 1.3vw !important;
+					font-size: 1.4em !important;
 				}
 
 				/* For screens with a minimum width of 1400px */
 				@media only screen and (min-width: 1400px) {
-					font-size: 1vw !important;
+					font-size: 1.5em !important;
 				}
 			}
 		}
 
 		&_TableCell {
 			text-align: center !important;
-			font-size: 1.5vw !important;
+
+			@media only screen and (max-width: 575px) {
+				font-size: 0.6em !important;
+			}
+
+			/* For screens with a minimum width of 575px */
+			@media only screen and (min-width: 575px) {
+				font-size: 0.7em !important;
+			}
+
+			/* For screens with a minimum width of 767px */
+			@media only screen and (min-width: 767px) {
+				font-size: 0.8em !important;
+			}
+
+			/* For screens with a minimum width of 991px */
+			@media only screen and (min-width: 991px) {
+				font-size: 0.9em !important;
+			}
+
+			/* For screens with a minimum width of 1200px */
+			@media only screen and (min-width: 1200px) {
+				font-size: 1em !important;
+			}
+
+			/* For screens with a minimum width of 1400px */
+			@media only screen and (min-width: 1400px) {
+				font-size: 1.1vw !important;
+			}
 		}
 
 		&_TableContainer {
@@ -150,27 +171,27 @@
 
 			/* For screens with a maximum width of 575px */
 			@media only screen and (max-width: 575px) {
-				font-size: 3vw !important;
+				font-size: 0.3em !important;
 			}
 
 			/* For screens with a minimum width of 575px */
 			@media only screen and (min-width: 575px) {
-				font-size: 2vw !important;
+				font-size: 0.4em !important;
 			}
 
 			/* For screens with a minimum width of 767px */
 			@media only screen and (min-width: 767px) {
-				font-size: 1.7vw !important;
+				font-size: 0.5em !important;
 			}
 
 			/* For screens with a minimum width of 991px */
 			@media only screen and (min-width: 991px) {
-				font-size: 1.5vw !important;
+				font-size: 0.6em !important;
 			}
 
 			/* For screens with a minimum width of 1200px */
 			@media only screen and (min-width: 1200px) {
-				font-size: 1.3vw !important;
+				font-size: 0.7em !important;
 			}
 
 			/* For screens with a minimum width of 1400px */
@@ -186,27 +207,27 @@
 
 			/* For screens with a maximum width of 575px */
 			@media only screen and (max-width: 575px) {
-				font-size: 3vw !important;
+				font-size: 0.3em !important;
 			}
 
 			/* For screens with a minimum width of 575px */
 			@media only screen and (min-width: 575px) {
-				font-size: 2vw !important;
+				font-size: 0.4em !important;
 			}
 
 			/* For screens with a minimum width of 767px */
 			@media only screen and (min-width: 767px) {
-				font-size: 1.7vw !important;
+				font-size: 0.5em !important;
 			}
 
 			/* For screens with a minimum width of 991px */
 			@media only screen and (min-width: 991px) {
-				font-size: 1.5vw !important;
+				font-size: 0.6em !important;
 			}
 
 			/* For screens with a minimum width of 1200px */
 			@media only screen and (min-width: 1200px) {
-				font-size: 1.3vw !important;
+				font-size: 0.7em !important;
 			}
 
 			/* For screens with a minimum width of 1400px */
