@@ -55,7 +55,7 @@ app.Run();
 
 async Task ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri") ?? builder.Configuration.GetSection("KeyVault:URL").Value!).ToString();
+    var keyVaultEndpoint = builder.Configuration.GetSection("KeyVault:URL").Value!;
     
     var secretClient = new SecretClient(new Uri(keyVaultEndpoint!), new DefaultAzureCredential());
 
@@ -64,7 +64,7 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
 
     string? dbSecretValue = dbSecret.Value ?? configuration.GetConnectionString("APIDbContext");
     services.AddDbContext<APIDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString(dbSecretValue!)));
+        options.UseSqlServer(dbSecretValue));
 
     services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<APIDbContext>()
@@ -124,14 +124,10 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
 
     services.AddCors(options => options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:5174")
+        builder.WithOrigins("https://linkup-ucms.azurewebsites.net")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();
-        builder.WithOrigins("http://localhost:5173")
-       .AllowAnyMethod()
-       .AllowAnyHeader()
-       .AllowCredentials();
     }));
 
     services.AddAuthentication(options =>
