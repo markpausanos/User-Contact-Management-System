@@ -51,10 +51,10 @@ app.Run();
 
 async Task ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    var keyVaultURL = builder.Configuration.GetSection("KeyVault:URL").Value;
-    var credential = new DefaultAzureCredential();
-    var secretClient = new SecretClient(new Uri(keyVaultURL!), credential);
+    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri") ?? builder.Configuration.GetSection("KeyVault:URL").Value).ToString();
     
+    var secretClient = new SecretClient(new Uri(keyVaultEndpoint!), new DefaultAzureCredential());
+
     KeyVaultSecret jwtSecret = await secretClient.GetSecretAsync("jwt-secret");
     KeyVaultSecret dbSecret = await secretClient.GetSecretAsync("azure-sqldb-connection");
 
