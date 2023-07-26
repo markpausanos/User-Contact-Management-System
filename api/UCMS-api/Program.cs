@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using FoolProof.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -29,14 +31,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-ConfigureServices(builder.Services, builder.Configuration);
+await ConfigureServices(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "UCMS API"); });
+    app.UseSwaggerUI();
 }
  
 
@@ -48,11 +50,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
 app.Run();
 
-void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+async Task ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    string? dbSecretValue = configuration.GetConnectionString("APIDbContext");
+    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri") ?? builder.Configuration.GetSection("KeyVault:URL").Value!).ToString();
+    
+    var secretClient = new SecretClient(new Uri(keyVaultEndpoint!), new DefaultAzureCredential());
+
+    KeyVaultSecret jwtSecret = await secretClient.GetSecretAsync("jwt-secret");
+    KeyVaultSecret dbSecret = await secretClient.GetSecretAsync("azure-sqldb-connection");
+
+    string? dbSecretValue = dbSecret.Value ?? configuration.GetConnectionString("APIDbContext");
     services.AddDbContext<APIDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString(dbSecretValue!)));
 
@@ -96,7 +106,7 @@ void ConfigureServices(IServiceCollection services, IConfiguration configuration
 
     services.Configure<JwtConfig>(configuration.GetSection("JwtConfig"));
     var jwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfig>();
-
+    jwtConfig.Secret = jwtSecret.Value ?? jwtConfig.Secret;
     var tokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
