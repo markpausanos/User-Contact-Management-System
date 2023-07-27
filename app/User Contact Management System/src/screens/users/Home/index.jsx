@@ -105,7 +105,7 @@ const Home = () => {
 						(x) =>
 							x.firstName?.trim().toLowerCase().includes(targetValue) ||
 							x.lastName?.trim().toLowerCase().includes(targetValue) ||
-							x.email?.trim().toLowerCase().includes(targetValue) ||
+							x.emailAddress?.trim().toLowerCase().includes(targetValue) ||
 							x.billingAddress?.trim().toLowerCase().includes(targetValue) ||
 							x.deliveryAddress?.trim().toLowerCase().includes(targetValue) ||
 							x.contactNumber?.trim().toLowerCase().includes(targetValue)
