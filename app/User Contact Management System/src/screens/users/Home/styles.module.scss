@@ -34,7 +34,7 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			gap: 1.5vw;
+			gap: 1vw;
 			height: 100%;
 			color: $cyan-400 !important;
 			font-weight: bold !important;
@@ -196,7 +196,7 @@
 
 			/* For screens with a minimum width of 1400px */
 			@media only screen and (min-width: 1400px) {
-				font-size: 1vw !important;
+				font-size: 1em !important;
 			}
 		}
 
@@ -232,7 +232,7 @@
 
 			/* For screens with a minimum width of 1400px */
 			@media only screen and (min-width: 1400px) {
-				font-size: 1vw !important;
+				font-size: 1em !important;
 			}
 		}
 	}

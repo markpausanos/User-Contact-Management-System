@@ -38,7 +38,7 @@ const NavHeader = () => {
 					<div>
 						<div>
 							<h2>
-								Hello, {user.firstName} {user.lastName}
+								{`Hello, ${user.firstName} ${user.lastName}`}
 							</h2>
 						</div>
 					</div>
