@@ -3,12 +3,15 @@ version: "3.8"
 services:
     db:
         container_name: ucms-db
+        user: root
         image: "mcr.microsoft.com/mssql/server:2019-latest"
         ports:
           - "1433:1433"
         environment:
             SA_PASSWORD: "S3cur3P@ssW0rd!"
             ACCEPT_EULA: "Y"
+        volumes:
+        - ./data:/var/opt/mssql/data
 
     api:
         image: azalithen/ucms-api
