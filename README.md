@@ -22,3 +22,7 @@ The User Contact Management System is a web application that allows users to eff
 
 - **User Authentication:** User authentication is implemented using industry-standard methods which is the JWT (JSON Web Tokens).
 
+## How to Setup on Local with Docker Compose
+
+- **Main branch:** Use the docker compose command using the docker-compose.yaml file here. The images are hosted in docker hub so no need to pull the whole repository.
+- **Local branch:** Clone the repository and use docker compose command.
