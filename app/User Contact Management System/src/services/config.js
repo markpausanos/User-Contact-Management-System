@@ -3,7 +3,7 @@ import { isLocal } from "../utils/destinations";
 let apiUrl = "https://ucms-api.azurewebsites.net/api";
 
 if (isLocal) {
-	apiUrl = "https://localhost:7294/api";
+	apiUrl = "http://localhost:8080/api";
 }
 
 const config = {

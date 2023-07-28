@@ -10,6 +10,4 @@ COPY . .
 
 EXPOSE 3000
 
-VOLUME [ "/app/node_modules" ]
-
-CMD [ "npm", "run", "dev"]
+CMD ["npm", "run", "dev"]

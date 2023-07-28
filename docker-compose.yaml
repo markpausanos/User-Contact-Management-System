@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+    db:
+        container_name: ucms-db
+        image: "mcr.microsoft.com/mssql/server:2019-latest"
+        ports:
+          - "1433:1433"
+        environment:
+            SA_PASSWORD: "S3cur3P@ssW0rd!"
+            ACCEPT_EULA: "Y"
+            
+    api:
+        container_name: ucms-api
+        build:
+          context: ./api/UCMS-api
+          dockerfile: Dockerfile
+        ports:
+          - "8080:80"
+        depends_on:
+          - db
+
+
+    app:
+      build:
+        context: ./app/User Contact Management System/
+        dockerfile: Dockerfile
+      container_name: ucms-app
+      ports:
+        - "3000:3000"
+      volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      
