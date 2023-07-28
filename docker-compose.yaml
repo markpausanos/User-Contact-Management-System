@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+    db:
+        container_name: ucms-db
+        image: "mcr.microsoft.com/mssql/server:2019-latest"
+        ports:
+          - "1433:1433"
+        environment:
+            SA_PASSWORD: "S3cur3P@ssW0rd!"
+            ACCEPT_EULA: "Y"
+
+    api:
+        image: azalithen/ucms-api
+        container_name: ucms-api
+        ports:
+          - "8080:80"
+        depends_on:
+          - db
+
+
+    app:
+      image: azalithen/ucms-app
+      container_name: ucms-app
+      ports:
+        - "3000:3000"
+      volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      
