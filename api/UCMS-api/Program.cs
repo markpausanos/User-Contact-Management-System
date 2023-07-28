@@ -1,5 +1,3 @@
-using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using FoolProof.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -31,16 +29,15 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-await ConfigureServices(builder.Services, builder.Configuration);
+ConfigureServices(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
- 
+
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseCors();
 app.UseHttpsRedirection();
@@ -53,18 +50,10 @@ app.MapControllers();
 
 app.Run();
 
-async Task ConfigureServices(IServiceCollection services, IConfiguration configuration)
+void ConfigureServices(IServiceCollection services, IConfiguration configuration)
 {
-    var keyVaultEndpoint = builder.Configuration.GetSection("KeyVault:URL").Value!;
-    
-    var secretClient = new SecretClient(new Uri(keyVaultEndpoint!), new DefaultAzureCredential());
-
-    KeyVaultSecret jwtSecret = await secretClient.GetSecretAsync("jwt-secret");
-    KeyVaultSecret dbSecret = await secretClient.GetSecretAsync("azure-sqldb-connection");
-
-    string? dbSecretValue = dbSecret.Value ?? configuration.GetConnectionString("APIDbContext");
     services.AddDbContext<APIDbContext>(options =>
-        options.UseSqlServer(dbSecretValue));
+    options.UseSqlServer(configuration.GetConnectionString("Default")));
 
     services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<APIDbContext>()
@@ -74,6 +63,17 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
 
     services.AddSwaggerGen(options =>
     {
+        options.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "UCMS API",
+                        Description = "API for the User Contact Management System",
+                        Version = "v1",
+                        TermsOfService = null,
+                    });
+        var filePath = Path.Combine(AppContext.BaseDirectory, "UCMS-api.xml");
+        options.IncludeXmlComments(filePath);
+
         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
@@ -84,7 +84,7 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
             Type = SecuritySchemeType.ApiKey,
             Scheme = "Bearer"
         });
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement() 
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement()
         {
             {
               new OpenApiSecurityScheme
@@ -106,7 +106,6 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
 
     services.Configure<JwtConfig>(configuration.GetSection("JwtConfig"));
     var jwtConfig = configuration.GetSection("JwtConfig").Get<JwtConfig>();
-    jwtConfig.Secret = jwtSecret.Value ?? jwtConfig.Secret;
     var tokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -124,7 +123,7 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
 
     services.AddCors(options => options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("https://linkup-ucms.azurewebsites.net")
+        builder.WithOrigins("http://localhost:3000")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials();
@@ -141,7 +140,6 @@ async Task ConfigureServices(IServiceCollection services, IConfiguration configu
         options.SaveToken = true;
         options.TokenValidationParameters = tokenValidationParameters;
     });
-
 
     services.AddTransient<APIDbContext>();
     services.AddTransient<UserUtils>();
