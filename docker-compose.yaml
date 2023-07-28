@@ -9,7 +9,9 @@ services:
         environment:
             SA_PASSWORD: "S3cur3P@ssW0rd!"
             ACCEPT_EULA: "Y"
-            
+        volumes:
+        - ./data:/var/opt/mssql/data
+
     api:
         container_name: ucms-api
         build:
